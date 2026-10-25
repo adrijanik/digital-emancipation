@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+message: "If you use or discuss this work, please cite the paper."
+title: "Digital Emancipation: Property, Banks, and the Completed Web (companion site)"
+type: software
+authors:
+  - family-names: Janik
+    given-names: Adrianna
+    orcid: "https://orcid.org/0000-0002-4387-4563"
+repository-code: "https://github.com/adrijanik/digital-emancipation"
+url: "https://adrijanik.github.io/digital-emancipation/"
+license: MIT
+preferred-citation:
+  type: conference-paper
+  authors:
+    - family-names: Janik
+      given-names: Adrianna
+      orcid: "https://orcid.org/0000-0002-4387-4563"
+  title: "Digital Emancipation: Property, Banks, and the Completed Web"
+  collection-title: "The Semantic Web: ISWC 2026"
+  collection-type: proceedings
+  series: "Lecture Notes in Computer Science"
+  volume: 17128
+  start: 526
+  end: 534
+  publisher:
+    name: "Springer"
+    city: "Cham"
+  year: 2027
+  doi: "10.1007/978-3-032-42029-9_30"

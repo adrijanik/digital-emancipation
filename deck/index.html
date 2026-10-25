@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Slides · Digital Emancipation</title>
+<style>
+:root{--bg:#00002E;--bar:#00002E;--ink:#F7F9FF;--muted:#D9E3FF;--rust:#FFBE5C;--line:#1C1C45}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font-family:'IBM Plex Sans',system-ui,sans-serif;overflow:hidden}
+#view{position:absolute;inset:0 0 52px 0;display:grid;place-items:center}
+#box{position:relative;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.5)}
+#frame{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0}
+#frame *,#frame *::before,#frame *::after{box-sizing:border-box}
+#frame h1,#frame h2,#frame h3,#frame h4,#frame p,#frame ul,#frame ol,#frame figure,#frame blockquote{margin:0}
+#frame table{border-collapse:collapse;width:100%}#frame th,#frame td{text-align:left;padding:16px 20px 16px 0;border-bottom:1px solid #D4D4DC}#frame th{font-size:24px;letter-spacing:2px;text-transform:uppercase;color:#003399;border-bottom:3px solid #003399}
+#frame section{display:none !important;position:relative;width:1920px;height:1080px;box-sizing:border-box;overflow:hidden}
+#frame section.on{display:flex !important}
+@page{size:1920px 1080px;margin:0}
+@media print{html,body{height:auto!important;overflow:visible!important;background:#fff!important}#view{position:static!important;display:block!important}#box{width:1920px!important;height:auto!important;overflow:visible!important;box-shadow:none!important}#frame{position:static!important;transform:none!important;width:1920px!important;height:auto!important}#frame section,#frame section.on{display:flex !important;break-after:page;page-break-after:always;-webkit-print-color-adjust:exact;print-color-adjust:exact}#frame section aside{display:none!important}#bar,#mode,#notes{display:none!important}}
+#bar{position:absolute;left:0;right:0;bottom:0;height:52px;background:var(--bar);border-top:1px solid var(--line);display:flex;align-items:center;gap:8px;padding:0 max(12px,env(safe-area-inset-left,0px));font-size:13px}
+#bar button,#bar a{font:inherit;color:var(--ink);background:transparent;border:1px solid var(--line);border-radius:6px;padding:5px 12px;cursor:pointer;text-decoration:none;white-space:nowrap}
+#bar button:hover,#bar a:hover{border-color:var(--rust)}
+#bar button[aria-pressed="true"]{background:var(--rust);color:#00002E;border-color:var(--rust)}
+#bar .sp{flex:1}
+#count{color:var(--muted);min-width:64px;text-align:center;font-variant-numeric:tabular-nums}
+#notes{position:absolute;left:0;right:0;bottom:52px;max-height:42%;overflow:auto;background:var(--bar);border-top:2px solid var(--rust);padding:14px max(16px,env(safe-area-inset-left,0px));display:none;font-size:15px;line-height:1.55}
+#notes.open{display:block}
+#notes h2{margin:0 0 6px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--rust)}
+#notes p{margin:0;max-width:90ch}
+#mode{position:absolute;top:10px;right:12px;font-size:12px;background:var(--rust);color:#00002E;border-radius:999px;padding:3px 12px;display:none;font-weight:600}
+#mode.on{display:block}
+@media(max-width:640px){#bar .hide{display:none}}
+</style>
+</head>
+<body>
+<div id="view"><div id="box"><div id="frame">
+<section id="cover" data-transition="fade" style="background:#F7F9FF;color:#1C1C45;font-family:Arial, Helvetica, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;justify-content:space-between;gap:48px">
+<div style="position:absolute;left:0;top:0;bottom:0;width:28px;background:#003399"></div>
+<div style="position:absolute;right:0;top:0;bottom:0;width:560px;background:#E6EDFF;display:flex;flex-direction:column;justify-content:center;gap:24px;padding:0 64px">
+<p style="font-size:22px;font-weight:700;color:#003399;letter-spacing:3px;text-transform:uppercase">Three proposed primitives</p>
+<div style="background:#FFFFFF;border:1px solid #B0C6FF;border-left:8px solid #003399;border-radius:10px;padding:26px 30px"><p style="font-size:34px;font-weight:700;color:#00002E">Title</p><p style="font-size:24px;line-height:1.3;color:#505070;margin-top:6px">Binds terms to a claim</p></div>
+<div style="background:#FFFFFF;border:1px solid #B0C6FF;border-left:8px solid #003399;border-radius:10px;padding:26px 30px"><p style="font-size:34px;font-weight:700;color:#00002E">Settlement</p><p style="font-size:24px;line-height:1.3;color:#505070;margin-top:6px">Puts a price on a query</p></div>
+<div style="background:#FFFFFF;border:1px solid #B0C6FF;border-left:8px solid #003399;border-radius:10px;padding:26px 30px"><p style="font-size:34px;font-weight:700;color:#00002E">Negotiation</p><p style="font-size:24px;line-height:1.3;color:#505070;margin-top:6px">Lets agents agree terms</p></div>
+</div>
+<p style="font-size:24px;font-weight:700;color:#003399;letter-spacing:3px;text-transform:uppercase;margin-left:48px">ISWC 2026 · Visionary Ideas</p>
+<div style="display:flex;flex-direction:column;gap:32px;margin-left:48px;width:1000px">
+<h1 style="font-family:Arial, Helvetica, sans-serif;font-size:116px;font-weight:700;line-height:1.02;color:#00002E">Digital Emancipation</h1>
+<h2 style="font-family:Arial, Helvetica, sans-serif;font-size:44px;font-weight:400;line-height:1.2;color:#003399">Property, Banks, and the Completed Web</h2>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px;margin-left:48px">
+<p style="font-size:32px;font-weight:700;color:#00002E">Adrianna Janik</p>
+<p style="font-size:24px;color:#505070">Accenture · Nearform</p>
+</div>
+<p style="position:absolute;left:184px;bottom:56px;width:1100px;font-size:21px;line-height:1.35;color:#505070">A vision paper. Analogies and estimates are the author&#39;s own, offered for debate. Personal work, not the position of any employer or standards body. Sponsored by Nearform. Disclaimers at the project site.</p>
+</section>
+<section id="serf" data-transition="fade" style="background:#F7F9FF;color:#1C1C45;font-family:Arial, Helvetica, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
+<p style="font-size:24px;font-weight:600;color:#003399;letter-spacing:3px;text-transform:uppercase">The digital serf</p>
+<h2 style="font-family:Arial, Helvetica, sans-serif;font-size:96px;font-weight:600;line-height:1.1;color:#00002E">You wrote ten thousand messages. You cannot take them with you.</h2>
+<div style="display:flex;gap:64px">
+<p style="flex:1;font-size:32px;line-height:1.4">The medieval serf was not a slave. He was bound in one respect only: he did not own the land he worked, and could not leave. Economists call it holdup.</p>
+<p style="flex:1;font-size:32px;line-height:1.4;color:#00002E">The user of the platform Web in 2026 stands in precisely this relation to providers. The resemblance is structural, not rhetorical.</p>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1200px;font-size:24px;color:#505070">Digital Emancipation · ISWC 2026 Visionary Ideas</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#505070">2 / 10</p>
+</section>
+<section id="stack" data-section="The alternative already exists, and what a day in it looks like." data-transition="fade" style="background:#F7F9FF;color:#1C1C45;font-family:Arial, Helvetica, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<h2 style="font-family:Arial, Helvetica, sans-serif;font-size:72px;font-weight:600;line-height:1.1;color:#00002E">The alphabet of freedom is already written</h2>
+<table style="font-size:32px;color:#1C1C45">
+<tr><th style="width:46%">What it must do</th><th style="width:54%">Open, royalty-free standard</th></tr>
+<tr><td>A name no platform can revoke</td><td>DIDs, WebID, Verifiable Credentials</td></tr>
+<tr><td>A pod she holds and can move</td><td>Linked Web Storage (W3C draft, from Solid), RDF</td></tr>
+<tr><td>A provenance trail both can read</td><td>PROV-O</td></tr>
+<tr><td>Consent as a standing deed</td><td>ODRL, Web Access Control, UMA</td></tr>
+<tr><td>Open query</td><td>SPARQL</td></tr>
+<tr><td>Settlement into ordinary money</td><td>Open Payments, Interledger</td></tr>
+</table>
+<p style="font-family:Arial, Helvetica, sans-serif;font-size:44px;font-style:italic;line-height:1.2;color:#003399">We have shipped the alphabet of freedom and never written the sentence.</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1200px;font-size:24px;color:#505070">Digital Emancipation · ISWC 2026 Visionary Ideas</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#505070">3 / 10</p>
+</section>
+<section id="anna" data-transition="fade" style="background:#F7F9FF;color:#1C1C45;font-family:Arial, Helvetica, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<h2 style="font-family:Arial, Helvetica, sans-serif;font-size:72px;font-weight:600;line-height:1.1;color:#00002E">One day in the emancipated Web</h2>
+<p style="font-size:32px;line-height:1.4">Anna is a nurse in Lyon. It should not take wealth or technical skill for her to own her data.</p>
+<div style="display:flex;gap:24px">
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#FFFFFF;padding:32px;border:1px solid #D4D4DC;border-radius:12px">
+<p style="font-size:24px;font-weight:600;color:#003399;letter-spacing:2px;text-transform:uppercase">While she sleeps</p>
+<p style="font-size:32px;line-height:1.35">A pharmacology consortium queries her anonymised cohort and pays on arrival, into her current account.</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#FFFFFF;padding:32px;border:1px solid #D4D4DC;border-radius:12px">
+<p style="font-size:24px;font-weight:600;color:#003399;letter-spacing:2px;text-transform:uppercase">Her pod</p>
+<p style="font-size:32px;line-height:1.35">She holds the title. A bank hosts it, and competes for her custom. Leaving costs an afternoon.</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#FFFFFF;padding:32px;border:1px solid #D4D4DC;border-radius:12px">
+<p style="font-size:24px;font-weight:600;color:#003399;letter-spacing:2px;text-transform:uppercase">At the clinic</p>
+<p style="font-size:32px;line-height:1.35">A live, revocable view into the patient’s own pod. Revoking it actually revokes it.</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#FFFFFF;padding:32px;border:1px solid #D4D4DC;border-radius:12px">
+<p style="font-size:24px;font-weight:600;color:#003399;letter-spacing:2px;text-transform:uppercase">In the evening</p>
+<p style="font-size:32px;line-height:1.35">A model company offers terms for her photographs. The offer is low. She declines, and nobody remarks on it.</p>
+</div>
+</div>
+<p style="font-family:Arial, Helvetica, sans-serif;font-size:44px;font-style:italic;line-height:1.2;color:#00002E">Freedom, delivered as infrastructure, is invisible; that is how you know it is finished.</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1200px;font-size:24px;color:#505070">Digital Emancipation · ISWC 2026 Visionary Ideas</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#505070">4 / 10</p>
+</section>
+<section id="bank" data-section="The bank as the bridge, and how it works." data-transition="fade" style="background:#001F5C;color:#F7F9FF;font-family:Arial, Helvetica, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;justify-content:center;gap:48px">
+<p style="font-size:24px;font-weight:600;color:#8CACFF;letter-spacing:3px;text-transform:uppercase">The first carrier: a bank</p>
+<h2 style="font-family:Arial, Helvetica, sans-serif;font-size:96px;font-weight:600;line-height:1.1;color:#F7F9FF">Digital freedom is currently a luxury good.</h2>
+<p style="font-family:Arial, Helvetica, sans-serif;font-size:44px;font-style:italic;line-height:1.25;color:#8CACFF">A liberty that requires expertise is not liberty. It is aristocracy with extra steps.</p>
+<p style="font-size:32px;line-height:1.4;color:#D9E3FF">Nearly every adult in the EU holds a bank account. Almost none holds a key pair they could find in an emergency. Banks are the practical first line, not the only one: any supervised custodian can carry the account.</p>
+<p style="font-family:Arial, Helvetica, sans-serif;font-size:72px;font-weight:600;line-height:1.1;color:#F7F9FF">Emancipation is not a proclamation. It is a financial operation.</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1200px;font-size:24px;color:#D9E3FF">Digital Emancipation · ISWC 2026 Visionary Ideas</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#D9E3FF">5 / 10</p>
+</section>
+<section id="architecture" data-transition="fade" style="background:#F7F9FF;color:#1C1C45;font-family:Arial, Helvetica, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:32px">
+<h2 style="font-family:Arial, Helvetica, sans-serif;font-size:72px;font-weight:600;line-height:1.1;color:#00002E">Four roles, kept separable</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+<div style="display:flex;flex-direction:column;gap:12px;background:#FFFFFF;padding:32px;border:1px solid #D4D4DC;border-radius:12px">
+<h3 style="font-family:Arial, Helvetica, sans-serif;font-size:44px;font-weight:600;line-height:1.1;color:#003399">Identity: issuer, not owner</h3>
+<p style="font-size:32px;line-height:1.35">Her DID lives on her devices. The bank, having done KYC anyway, issues credentials: adult, resident, nurse.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FFFFFF;padding:32px;border:1px solid #D4D4DC;border-radius:12px">
+<h3 style="font-family:Arial, Helvetica, sans-serif;font-size:44px;font-weight:600;line-height:1.1;color:#003399">Custody: a vault, not a lake</h3>
+<p style="font-size:32px;line-height:1.35">Encrypted client-side. The bank holds a recovery share, never the plaintext, and recovery works at a counter.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FFFFFF;padding:32px;border:1px solid #D4D4DC;border-radius:12px">
+<h3 style="font-family:Arial, Helvetica, sans-serif;font-size:44px;font-weight:600;line-height:1.1;color:#003399">Ingress: enforcing portability</h3>
+<p style="font-size:32px;line-height:1.35">Authorise once; the bank exercises her GDPR Article 20 and EU Data Act rights for her.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FFFFFF;padding:32px;border:1px solid #D4D4DC;border-radius:12px">
+<h3 style="font-family:Arial, Helvetica, sans-serif;font-size:44px;font-weight:600;line-height:1.1;color:#003399">Market: a profit motive</h3>
+<p style="font-size:32px;line-height:1.35">Priced queries settle into the account she is paid into. The bank earns a basis-point fee.</p>
+</div>
+</div>
+<p style="font-size:32px;line-height:1.4;color:#00002E">Ownership is written in neutral standards. The carrier, a bank first, is a tenant, not a landlord.</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1200px;font-size:24px;color:#505070">Digital Emancipation · ISWC 2026 Visionary Ideas</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#505070">6 / 10</p>
+</section>
+<section id="directive" data-transition="fade" style="background:#F7F9FF;color:#1C1C45;font-family:Arial, Helvetica, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:32px">
+<h2 style="font-family:Arial, Helvetica, sans-serif;font-size:72px;font-weight:600;line-height:1.1;color:#00002E">The Data Account Directive</h2>
+<p style="font-size:32px;line-height:1.4">Modelled on the Payment Accounts Directive, which gave every EU resident the right to a basic bank account.</p>
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;gap:24px;align-items:center;background:#FFFFFF;padding:20px 32px;border:1px solid #D4D4DC;border-radius:12px">
+<p style="font-family:Arial, Helvetica, sans-serif;font-size:44px;font-weight:600;color:#003399">1</p>
+<p style="font-size:32px;line-height:1.3;color:#00002E">A right to a basic data account</p>
+</div>
+<div style="display:flex;gap:24px;align-items:center;background:#FFFFFF;padding:20px 32px;border:1px solid #D4D4DC;border-radius:12px">
+<p style="font-family:Arial, Helvetica, sans-serif;font-size:44px;font-weight:600;color:#003399">2</p>
+<p style="font-size:32px;line-height:1.3;color:#00002E">Mandated custodian switching, over open storage standards (Linked Web Storage, from Solid)</p>
+</div>
+<div style="display:flex;gap:24px;align-items:center;background:#FFFFFF;padding:20px 32px;border:1px solid #D4D4DC;border-radius:12px">
+<p style="font-family:Arial, Helvetica, sans-serif;font-size:44px;font-weight:600;color:#003399">3</p>
+<p style="font-size:32px;line-height:1.3;color:#00002E">Escrowed-key standards that prohibit custodian access to plaintext</p>
+</div>
+<div style="display:flex;gap:24px;align-items:center;background:#FFFFFF;padding:20px 32px;border:1px solid #D4D4DC;border-radius:12px">
+<p style="font-family:Arial, Helvetica, sans-serif;font-size:44px;font-weight:600;color:#003399">4</p>
+<p style="font-size:32px;line-height:1.3;color:#00002E">Supervision of pod custody as a fiduciary function</p>
+</div>
+</div>
+<p style="font-family:Arial, Helvetica, sans-serif;font-size:44px;font-style:italic;line-height:1.2;color:#003399">Standards without obligation remain demos. Obligation without computational standards remains paperwork.</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1200px;font-size:24px;color:#505070">Digital Emancipation · ISWC 2026 Visionary Ideas</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#505070">7 / 10</p>
+</section>
+<section id="primitives" data-section="What is missing, what could kill it, and the call." data-transition="fade" style="background:#F7F9FF;color:#1C1C45;font-family:Arial, Helvetica, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:32px">
+<h2 style="font-family:Arial, Helvetica, sans-serif;font-size:72px;font-weight:600;line-height:1.1;color:#00002E">Three missing primitives</h2>
+<div style="display:flex;gap:24px">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#FFFFFF;padding:36px;border:1px solid #D4D4DC;border-radius:12px">
+<h3 style="font-family:Arial, Helvetica, sans-serif;font-size:44px;font-weight:600;color:#003399">Title</h3>
+<p style="font-size:32px;line-height:1.35">A signed assertion that a named principal holds enumerated rights in a described graph. Joins DID, PROV-O, ODRL and Data Integrity.</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#FFFFFF;padding:36px;border:1px solid #D4D4DC;border-radius:12px">
+<h3 style="font-family:Arial, Helvetica, sans-serif;font-size:44px;font-weight:600;color:#003399">Settlement</h3>
+<p style="font-size:32px;line-height:1.35">Priced Query: a handshake around any SPARQL endpoint. An ODRL offer is countersigned and settled before results flow.</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#FFFFFF;padding:36px;border:1px solid #D4D4DC;border-radius:12px">
+<h3 style="font-family:Arial, Helvetica, sans-serif;font-size:44px;font-weight:600;color:#003399">Negotiation</h3>
+<p style="font-size:32px;line-height:1.35">An open protocol for agents to agree contracts over ODRL terms, with SHACL shapes as the schema of agreement.</p>
+</div>
+</div>
+<p style="font-family:Arial, Helvetica, sans-serif;font-size:44px;font-style:italic;line-height:1.2;color:#00002E">Query becomes what it always secretly was: an act between principals, now visible, priced, and consensual.</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1200px;font-size:24px;color:#505070">Digital Emancipation · ISWC 2026 Visionary Ideas</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#505070">8 / 10</p>
+</section>
+<section id="objections" data-transition="fade" style="background:#F7F9FF;color:#1C1C45;font-family:Arial, Helvetica, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:32px">
+<h2 style="font-family:Arial, Helvetica, sans-serif;font-size:72px;font-weight:600;line-height:1.1;color:#00002E">Objections, and what they teach</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+<div style="display:flex;flex-direction:column;gap:12px;background:#FFFFFF;padding:32px;border:1px solid #D4D4DC;border-radius:12px">
+<p style="font-size:24px;font-weight:600;color:#003399;letter-spacing:2px;text-transform:uppercase">Non-rivalry</p>
+<p style="font-size:32px;line-height:1.35">Land titles do not prevent trespass; they make it actionable. Usage attestation, not prevention, is the enforcement layer.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FFFFFF;padding:32px;border:1px solid #D4D4DC;border-radius:12px">
+<p style="font-size:24px;font-weight:600;color:#003399;letter-spacing:2px;text-transform:uppercase">Marginal value</p>
+<p style="font-size:32px;line-height:1.35">One person’s records may be worth cents to a model (our estimate, untested). Then titles must pool into cohorts.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FFFFFF;padding:32px;border:1px solid #D4D4DC;border-radius:12px">
+<p style="font-size:24px;font-weight:600;color:#003399;letter-spacing:2px;text-transform:uppercase">Relational data</p>
+<p style="font-size:32px;line-height:1.35">Sharing my data reveals yours. The strongest objection: cohort-level title, and regulating harmful inference.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FFFFFF;padding:32px;border:1px solid #D4D4DC;border-radius:12px">
+<p style="font-size:24px;font-weight:600;color:#003399;letter-spacing:2px;text-transform:uppercase">Inalienability</p>
+<p style="font-size:32px;line-height:1.35">What trades is a bounded, revocable licence, never the right itself. The Directive sets floors before markets.</p>
+</div>
+</div>
+<p style="font-size:32px;line-height:1.4;color:#00002E"><b>Falsifiable:</b> a staged pilot with one bank and one high-value cohort. If revenue cannot clear custody cost, the economic premise fails.</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1200px;font-size:24px;color:#505070">Digital Emancipation · ISWC 2026 Visionary Ideas</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#505070">9 / 10</p>
+</section>
+<section id="coda" data-transition="fade" style="background:#001F5C;color:#F7F9FF;font-family:Arial, Helvetica, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;justify-content:center;gap:56px">
+<p style="font-family:Arial, Helvetica, sans-serif;font-size:72px;font-weight:600;line-height:1.15;color:#F7F9FF">The first Web made everyone a publisher.<br>The completed Web will make everyone an owner.</p>
+<p style="font-family:Arial, Helvetica, sans-serif;font-size:96px;font-style:italic;line-height:1.1;color:#8CACFF">The alphabet is ours. The sentence is due.</p>
+<p style="font-size:32px;line-height:1.4;color:#D9E3FF">Build title, settlement and negotiation. Run one bank, one cohort, as the pilot.</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1200px;font-size:24px;color:#D9E3FF">Adrianna Janik · Digital Emancipation · ISWC 2026 Visionary Ideas</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-size:24px;color:#D9E3FF">10 / 10</p>
+</section>
+</div></div></div>
+<div id="mode">Two-minute pitch: slides 2, 5, 10</div>
+<div id="notes" role="region" aria-label="Speaker notes"><h2>Speaker notes</h2><p id="notetext"></p></div>
+<div id="bar">
+<a href="../" class="hide">Home</a>
+<a href="../#disclaimers" class="hide" title="Status of claims, simulation notice, no advice, no affiliation">Disclaimers</a>
+<button id="prev" aria-label="Previous slide">&larr;</button>
+<span id="count"></span>
+<button id="next" aria-label="Next slide">&rarr;</button>
+<span class="sp"></span>
+<button id="pitch" aria-pressed="false" title="Show only the two-minute path (P)">2-min pitch</button>
+<button id="nbtn" aria-pressed="false" title="Speaker notes (N)">Notes</button>
+<button id="fs" class="hide" title="Fullscreen (F)">Fullscreen</button>
+</div>
+<script>
+(function(){
+var NOTES=["About 30 seconds. Open with the claim, not the credentials: the technical alphabet of freedom is already standardised, what is missing is the sentence of composition and distribution. Two-minute pitch path through this deck: slides 2 (the serf), 5 (the bank) and 10 (the call). Everything else is the argument that holds them up.", "About 60 seconds, and part of the two-minute pitch. Start with the felt experience: ten thousand messages, a recommendation engine that learned your taste and the hour you fall asleep, and a copy you may petition for in a format designed to be useless. The serf image is deliberate and meant structurally: bound in one respect only, he did not own the land and could not leave, because leaving meant abandoning the product of his life. That is holdup. The grievance ends in one sentence: the people of the Web produce its value and own none of it. Everything that follows is about the alternative.", "About 60 seconds. This is an existence argument, not a forecast. Nearly every capability in the day I am about to describe names a royalty-free standard that already exists, most stewarded by the W3C and many authored in this community. Read PROV-O not as metadata but as a chain of title, the land registry of the emancipated Web, waiting to be treated as one. Read ODRL, long treated as a compliance vocabulary, as a deed. What failed was never the specification but distribution, and distribution is an institutional problem. Earlier efforts exist, and as I read the public sources none has done this alone: banks have shown Solid pods (NatWest demonstrated one in 2020) that gave customer convenience without title or income; Flanders set up a government-owned utility, Athumi, to give citizens Solid pods, with consent management as the first use and reach figures that come from the vendor; Japan certifies information banks that need no banking licence, and, as I understand it, without a GDPR-style portability mandate. Treat these as my readings of public sources, not audited facts.", "About 75 seconds. Tell it as a story, not a feature list. Anna has never heard of RDF, any more than of TCP. She knows only that her records are hers, that leaving is easy, and that nobody reads her life without asking. Her data account and her bank account have become the same kind of thing, protected by the same law, so small recurring income arrives where her salary does, twenty years of clinical observations working like a vineyard while she sleeps. Because she can leave, everyone treats her well: exit, not petition, disciplines her providers. Consent is not a checkbox signed under duress but a standing, machine-enforced relationship. The vignette is an illustration of a design target, offered for debate, not a measured result.", "About 60 seconds, and the heart of the two-minute pitch. Confront the uncomfortable fact about every self-sovereignty movement, including ours: it asks every serf to become his own lord, locksmith and vault. The cryptocurrency movement made the failure vivid. History offers an analogy, which the paper explicitly offers as analogy and not evidence: durable land reforms shared a thread of administration, not proclamation, a financing and titling mechanism outlasting the decree. We propose, against the temper of the decentralisation movement, that the intermediate carrier of digital property start with the regulated banking system, the only mass-distribution channel for custody our societies have built. Design constraint: the serfs must never buy back their own product, so ingress must be free and legally mandated. Banks are the first line as a practicality, not a doctrine: the Directive's duties attach to any supervised custodian, so credit unions, post offices, health funds or new entrants can carry accounts too.", "About 75 seconds. Concretely, the data account is a pod on an open storage protocol, Solid today and the W3C Linked Web Storage Protocol as it standardises (First Public Working Draft, March 2026), provisioned by a carrier that will usually be a bank at first, and the carrier plays four separable roles. Keeping them separable is what stops this becoming feudalism with a banking licence. Identity: the bank issues credentials, it does not own the identity. Custody: the safe-deposit box is the model, the bank guards and insures it and cannot read what is inside; as a bonus, a pod in custodial trust has an executor, so data passes to her children through probate. Ingress: a pod is worthless empty, and no nurse will spend her evenings on subject-access requests. Market: no self-sovereignty project has ever had a distribution partner with a profit motive to acquire ordinary users. This is that. Carrier neutrality, hired not married: the ownership layer lives in no bank\u2019s ledger; the carrier layer is replaceable, and exit to self-custody must stay as lawful and cheap as withdrawing cash.", "About 45 seconds. The architecture exposes a regulatory gap: data custody is today neither a payment service nor an investment service. The proposal is a directive modelled on the Payment Accounts Directive, with four pillars. Be clear on what is novel: to our knowledge, the statutory right to a data account and the title, settlement and negotiation stack on the next slide are proposed here for the first time; related pieces exist, the Data Governance Act recognises intermediaries but obliges neutrality and grants no right to an account, and Gaia-X and the International Data Spaces demonstrate usage control between firms while nobody has built the retail equivalent for persons. The closing line is the whole logic of why this needs both a legal and a technical track.", "About 75 seconds. This is the research agenda, and it is the part the Semantic Web community is best placed to deliver. Composition fails today at three points. Title: ODRL expresses terms, PROV-O expresses history, and nothing binds them into a registrable title that is verifiable, divisible, heritable and anchorable in a public registry; pods deployed to date are dead capital and this is the deed that revives them. Settlement: SPARQL has no economic envelope; the cohort data must be queried without exposure, so the execution substrate, trusted execution, multiparty computation or differentially private release under a priced budget, is itself a research object. Negotiation: offer and acceptance occur at machine speed in an agent-mediated Web, so a person states her policy once and her agent trades on it forever.", "About 75 seconds. A vision earns rigour by naming what could kill it, and each of four standard objections reshapes the proposal rather than refuting it. Non-rivalry: data once copied is loose, and no title prevents replication; but no property right is enforced by physics. Marginal value: this is our estimate, not a measured result, and the assumption most in need of testing; if it holds, titles must pool, and the bank becomes the missing administrator of a data union with a counter in every town. Relational data and inference externalities is the objection we consider strongest: a purely individual property frame cannot carry this weight, and we do not pretend otherwise. Inalienability: what trades is a bounded, revocable licence, and the market is the coordination layer, never the end. Be candid about evidence: the paper marks its historical analogies and economic estimates as its own propositions, offered for debate rather than findings, and the pilot is what would test them.", "About 30 seconds, and the close of the two-minute pitch. Anna is what this community\u2019s standards look like when someone writes the sentence, and the bank on her corner agrees to hold the book. End on the ask: the Semantic Web community has the alphabet and is best placed to build the three missing primitives, and the pilot is what turns an argument into evidence. Likely questions: why banks and not decentralised finance (enforceability exists there today, with courts, insurance and two centuries of fiduciary law, and the carrier is replaceable); what about relational data (cohort-level title, and regulating inference rather than transfer); is this realistic politically (the paper\u2019s proposal is a directive modelled on one that already passed); what would falsify it (the pilot, if revenue cannot clear custody cost)."];
+var secs=[].slice.call(document.querySelectorAll('#frame section'));
+var PITCH=[1,4,9],pitch=false,cur=0;
+var order=function(){return pitch?PITCH:secs.map(function(_,i){return i})};
+function fit(){var w=innerWidth,h=innerHeight-52,sc=Math.min(w/1920,h/1080);var b=document.getElementById('box');b.style.width=1920*sc+'px';b.style.height=1080*sc+'px';document.getElementById('frame').style.transform='scale('+sc+')'}
+function show(i){cur=Math.max(0,Math.min(secs.length-1,i));secs.forEach(function(s,k){s.classList.toggle('on',k===cur)});var o=order(),p=o.indexOf(cur);document.getElementById('count').textContent=(p<0?'-':p+1)+' / '+o.length;document.getElementById('notetext').textContent=NOTES[cur]||'No notes for this slide.';try{history.replaceState(null,'','#'+(cur+1))}catch(e){}}
+function go(d){var o=order(),p=o.indexOf(cur);if(p<0){show(o[0]);return}var n=p+d;if(n>=0&&n<o.length)show(o[n])}
+function togglePitch(){pitch=!pitch;document.getElementById('pitch').setAttribute('aria-pressed',pitch);document.getElementById('mode').classList.toggle('on',pitch);if(pitch)show(PITCH[0]);else show(cur)}
+function toggleNotes(){var n=document.getElementById('notes');var o=n.classList.toggle('open');document.getElementById('nbtn').setAttribute('aria-pressed',o)}
+function fs(){var d=document.documentElement;if(document.fullscreenElement){document.exitFullscreen()}else if(d.requestFullscreen){d.requestFullscreen()}}
+document.getElementById('prev').onclick=function(){go(-1)};document.getElementById('next').onclick=function(){go(1)};
+document.getElementById('pitch').onclick=togglePitch;document.getElementById('nbtn').onclick=toggleNotes;document.getElementById('fs').onclick=fs;
+addEventListener('keydown',function(e){var k=e.key;if(k==='ArrowRight'||k==='PageDown'||k===' '){e.preventDefault();go(1)}else if(k==='ArrowLeft'||k==='PageUp'){e.preventDefault();go(-1)}else if(k==='Home'){show(order()[0])}else if(k==='End'){var o=order();show(o[o.length-1])}else if(k==='n'||k==='N'){toggleNotes()}else if(k==='p'||k==='P'){togglePitch()}else if(k==='f'||k==='F'){fs()}});
+var x0=null;addEventListener('touchstart',function(e){x0=e.touches[0].clientX},{passive:true});addEventListener('touchend',function(e){if(x0===null)return;var dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>50)go(dx<0?1:-1);x0=null},{passive:true});
+addEventListener('resize',fit);addEventListener('hashchange',function(){var n=parseInt(location.hash.slice(1),10);if(n)show(n-1)});
+fit();var h0=parseInt(location.hash.slice(1),10);show(h0?h0-1:0);
+})();
+</script>
+</body>
+</html>

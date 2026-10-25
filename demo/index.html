@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data Account Demo · Digital Emancipation</title>
+<style>
+/* Layout: left, one scene at a time with its single action; right, Anna's account as a persistent ledger so state is always visible. */
+:root{--bg:#F7F9FF;--panel:#FFFFFF;--sub:#EBEFF7;--line:#D4D4DC;--ink:#00002E;--muted:#505070;--rust:#003399;--on-rust:#FFFFFF;--ochre:#FFBE5C;--on-ochre:#00002E;--ok:#037E4E;--bad:#003399;--iri:#1C49A4;--str:#037E4E;
+--serif:Arial,Helvetica,sans-serif;--sans:Arial,Helvetica,sans-serif;--mono:'IBM Plex Mono',ui-monospace,Menlo,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#001F5C;--panel:#00297A;--sub:#313C5E;--line:#41507D;--ink:#F7F9FF;--muted:#BFCCE6;--rust:#A3B6DA;--on-rust:#001F5C;--ok:#8FE5C4;--bad:#FFBE5C;--iri:#859DCE;--str:#8FE5C4;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#001F5C;--panel:#00297A;--sub:#313C5E;--line:#41507D;--ink:#F7F9FF;--muted:#BFCCE6;--rust:#A3B6DA;--on-rust:#001F5C;--ok:#8FE5C4;--bad:#FFBE5C;--iri:#859DCE;--str:#8FE5C4;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;margin:0;padding-block:28px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(30px,5vw,44px);line-height:1.1;margin:0;text-wrap:balance}
+h2{font-family:var(--serif);font-weight:600;font-size:clamp(22px,3vw,28px);line-height:1.15;margin:0;text-wrap:balance}
+h3{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 8px;font-weight:600}
+p{margin:0}
+.dek{max-width:70ch;color:var(--muted);font-size:16px}
+.sim{font-size:13px;color:var(--muted);border-left:3px solid var(--ochre);padding:2px 0 2px 10px;max-width:70ch}
+.scn{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.scn span{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-right:4px}.scn button{font:inherit;font-size:13px;font-weight:500;background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 14px;cursor:pointer}.scn button[aria-checked="true"]{background:var(--rust);color:var(--on-rust);border-color:var(--rust)}
+.steps{display:flex;gap:8px;flex-wrap:wrap}
+.steps button{font:inherit;font-size:13px;font-weight:500;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer}
+.steps button[aria-current="step"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.steps button:disabled{opacity:.45;cursor:not-allowed}
+.grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:20px;align-items:start}
+@media(max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:16px;min-width:0}
+.head{display:flex;gap:10px;align-items:flex-start}.head h2{flex:1;min-width:0}
+.tags{display:flex;gap:4px;flex:none}
+.tag{flex:none;display:inline-grid;place-items:center;width:20px;height:20px;border-radius:4px;background:var(--rust);color:var(--on-rust);font-size:11px;font-weight:700}
+.pin{flex:none;display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--rust);color:var(--on-rust);font-size:11px;font-weight:700}
+.pin.off{background:transparent;color:var(--muted);border:1px solid var(--line)}
+button.primary{font:inherit;font-weight:600;background:var(--rust);color:var(--on-rust);border:0;border-radius:8px;padding:10px 18px;cursor:pointer;align-self:flex-start}
+button.primary:disabled{opacity:.4;cursor:not-allowed}
+button.ghost{font:inherit;font-weight:500;background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:9px 16px;cursor:pointer}
+button:focus-visible,select:focus-visible,input:focus-visible,label:focus-within{outline:2px solid var(--rust);outline-offset:2px}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:4px}
+.res{background:var(--sub);border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;font-size:14px}
+.res .ok{color:var(--ok);font-weight:600}
+.res .bad{color:var(--bad);font-weight:600}
+.mono{font-family:var(--mono);font-size:12.5px}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;font-weight:600;padding:0 8px 6px 0}
+td{padding:8px 8px 8px 0;border-top:1px solid var(--line);vertical-align:top}
+.tw{overflow-x:auto}
+select{font:inherit;font-size:13px;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:4px 6px}
+.pill{align-self:flex-start;flex:none;display:inline-block;font-size:12px;font-weight:600;border-radius:999px;padding:1px 10px;background:var(--ochre);color:var(--on-ochre);white-space:nowrap}
+.muted{color:var(--muted)}
+.seg{display:flex;gap:8px;flex-wrap:wrap}
+.seg label{display:flex;gap:8px;align-items:flex-start;background:var(--sub);border:1px solid var(--line);border-radius:8px;padding:10px 12px;cursor:pointer;flex:1 1 220px;min-width:0}
+.seg input{margin-top:4px}
+.seg label:has(input:checked){border-color:var(--rust);box-shadow:inset 0 0 0 1px var(--rust)}
+ul.plain{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+ul.plain li{display:flex;gap:8px;align-items:flex-start}
+.mark{flex:none;width:18px;text-align:center;font-weight:700}
+.mark.ok{color:var(--ok)}.mark.bad{color:var(--bad)}
+.stat{display:flex;gap:20px;flex-wrap:wrap}
+.stat div{display:flex;flex-direction:column}
+.stat b{font-family:var(--serif);font-size:26px;line-height:1.1}
+.stat span{font-size:12px;color:var(--muted)}
+.carrier{font-size:12px;font-weight:600;border:1px dashed var(--muted);border-radius:6px;padding:2px 8px}
+.log{max-height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;font-size:13px}
+.log li{display:grid;grid-template-columns:42px 1fr 20px;gap:8px;align-items:start}
+.log time{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.pins{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:12.5px}
+.pins>span{display:flex;align-items:center;gap:6px}.pins .pin{display:inline-grid;width:20px;height:20px}
+@media(prefers-reduced-motion:no-preference){.fade{animation:f .3s ease both}@keyframes f{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}}
+
+.tech{display:flex;flex-direction:column;gap:14px}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:16px;align-items:start}
+.tb{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.tbh{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-size:11.5px;font-weight:600;border-radius:5px;padding:1px 8px;white-space:nowrap}
+.chip.e{background:var(--ochre);color:var(--on-ochre)}
+.chip.p{background:var(--rust);color:var(--on-rust)}
+pre.code{margin:0;background:var(--sub);border-radius:8px;padding:12px;overflow:auto;font-family:var(--mono);font-size:12.5px;line-height:1.55;max-height:380px;tab-size:2}
+pre.code code{font-family:inherit;white-space:pre}
+.c-com{color:var(--muted);font-style:italic}.c-str{color:var(--str)}.c-iri{color:var(--iri)}.c-kw{font-weight:600;color:var(--rust)}
+.tn{font-size:12.5px;color:var(--muted)}
+.d-del{color:var(--bad)}.d-ins{color:var(--ok)}
+.states{list-style:none;margin:0;padding:0;display:flex;gap:6px;flex-wrap:wrap;font-size:12.5px}
+.states li{border:1px solid var(--line);border-radius:999px;padding:2px 10px;color:var(--muted)}
+.states li.done{color:var(--ok);border-color:var(--ok)}
+.states li.now{color:var(--ink);border-color:var(--rust);font-weight:600}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px;font-size:13.5px}
+@media(max-width:600px){.two{grid-template-columns:1fr}}
+.chg{color:var(--rust);font-weight:600}
+
+.sitenav{max-width:1280px;margin:0 auto 18px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:13px}
+.sitenav a{color:var(--ink);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:4px 12px;background:var(--panel,var(--bg))}
+.sitenav a:hover{border-color:var(--rust)}
+.sitenav a[aria-current="page"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.sitenav .home{font-family:Arial,Helvetica,sans-serif;font-size:17px;font-weight:600;border:0;background:none;padding:0 10px 0 0}
+</style>
+</head>
+<body>
+<nav class="sitenav" aria-label="Site"><a class="home" href="../">Digital Emancipation</a><a href="../deck/">Slides</a><a href="../diagram/">Diagram</a><a href="../demo/" aria-current="page">Demo</a><a href="../#disclaimers">Disclaimers</a></nav>
+
+<main>
+<h1>A data account, in four steps</h1>
+<p class="dek" id="dek"></p>
+<p class="sim">Simulation. People, institutions and prices are invented, and nothing connects to a real bank or hospital. The hashes are computed live in your browser.</p>
+<div class="scn" id="scn" role="radiogroup" aria-label="Scenario"></div>
+<nav class="steps" id="steps" aria-label="Steps"></nav>
+<div class="grid">
+<section class="card" id="stage" aria-live="polite"></section>
+<aside class="card" id="ledger" aria-label="Anna's data account"></aside>
+</div>
+<section class="tech" id="tech" aria-label="Technical layer"></section>
+</main>
+<script>
+(function(){
+var $=function(q){return document.querySelector(q)};
+var E=function(x){return String(x).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
+var SC={
+clinical:{label:'Clinical records',
+ dek:'Anna is a patient with type 2 diabetes. Follow her data from the hospital into an account at her bank, through an offer from a research group, to a payout and a change of bank.',
+ holder:"St Mary’s Hospital",holderShort:"St Mary’s",
+ intro:'Like a basic bank account, this is a right: her bank must offer one. The bank checks her identity once and issues credentials. It does not own her identity, and the account lives in neutral standards.',
+ s1head:'Her hospital holds the data. The account holds the claim.',
+ prog:['Bank files a portability request to St Mary’s on Anna’s behalf (existing law, GDPR Art. 20)','Export received: four files','Converted to linked data, with provenance','Receipt stored, record encrypted with Anna’s key'],
+ recs:[
+  {id:'dx',name:'Diagnosis list',why:'Hospital must retain it by law.',mode:'reference',kb:{reference:0.2,commitment:0.6,full:6}},
+  {id:'med',name:'Medication list',why:'Held by a durable holder.',mode:'reference',kb:{reference:0.2,commitment:0.6,full:3}},
+  {id:'rcp',name:'Lab results, HbA1c 2023 to 2026',why:'Buyers need proof of what it said on 2 Mar 2026.',mode:'commitment',kb:{reference:0.2,commitment:0.6,full:38}},
+  {id:'ann',name:'Clinician annotations (free text)',why:'The hospital is migrating systems. Most at risk.',mode:'full',kb:{reference:0.2,commitment:0.6,full:310}}],
+ rcpName:'lab results',rcpDate:'2 Mar 2026',
+ orig:'{"hba1c_mmol_mol":[["2023-03-02",58],["2024-03-04",54],["2025-03-03",52],["2026-03-02",49]]}',
+ alt:'{"hba1c_mmol_mol":[["2023-03-02",58],["2024-03-04",54],["2025-03-03",52],["2026-03-02",53]]}',
+ tamperLabel:'Simulate: the hospital quietly alters a lab value',
+ buyers:{
+  A:{name:'Ardent Diabetes Research Group',kind:'University, non-profit',wants:['Age band','Diagnosis code','HbA1c series','Medication class'],price:1.00,cohort:10000,terms:'12 months, no re-identification, results published openly.',refuse:false},
+  B:{name:'NorthShield Insurance',kind:'Insurer, for profit',wants:['Age band','Diagnosis code','HbA1c series','Medication class','Clinician free text'],price:4.00,cohort:20000,terms:'Underwriting models, retained indefinitely.',refuse:true}},
+ pol:['Research by non-profits: permitted.','Free-text clinical notes never leave my account.','Insurance underwriting: prohibited.','Cohort of at least 1,000 people.'],
+ accept:'Non-profit research, no free text requested, cohort above 1,000.',
+ refuseWhy:'Policy 2: the request includes clinician free text. Policy 3: insurance underwriting is prohibited.',
+ agentRefuseLog:'Agent refused: policies 2 and 3.',
+ sample:'{ "ageBand": "60-69", "diagnosis": "T2D", "hba1c": [58, 54, 52, 49], "medClass": "biguanide" }',
+ withheld:'name, address, clinician free text',
+ delivLog:'Lab results verified against the receipt. Four fields delivered; name, address and free text withheld.',
+ note:''},
+social:{label:'Social platform',
+ dek:'Anna has used a social platform for fifteen years. Follow her data from the platform into an account at her bank, through an offer from a research lab, to a payout and a change of bank. The platform, Circlr, is invented and stands in for any of them.',
+ holder:'Circlr',holderShort:'Circlr',
+ intro:'Like a basic bank account, this is a right: her bank must offer one. The bank checks her identity once and issues credentials. It does not own her identity, and the account lives in neutral standards.',
+ s1head:'The platform holds the data. The account holds the claim.',
+ prog:['Bank files a portability request to Circlr on Anna’s behalf (existing law, GDPR Art. 20)','Export received: JSON and HTML files, 4.2 GB','Converted to linked data, with provenance','Receipt stored, record encrypted with Anna’s key'],
+ recs:[
+  {id:'prof',name:'Profile and declared interests',why:'Small, valuable, declared by her. Keep it.',mode:'full',kb:{reference:0.2,commitment:0.6,full:40}},
+  {id:'post',name:'Posts and comments (text)',why:'Small. The platform may delete or edit it.',mode:'full',kb:{reference:0.2,commitment:0.6,full:900}},
+  {id:'photo',name:'Photos and videos',why:'Bulk. Nearly all the bytes, and the least valuable to buyers.',mode:'reference',kb:{reference:0.2,commitment:0.6,full:4200000}},
+  {id:'rcp',name:'Activity log (views, clicks, times)',why:'Buyers need proof of what it said on 14 Sep 2026.',mode:'commitment',kb:{reference:0.2,commitment:0.6,full:25000}},
+  {id:'inf',name:'Inferred ad profile',why:'Made by the platform. Probably outside Art. 20, so Anna holds only a claim.',mode:'reference',kb:{reference:0.2,commitment:0.6,full:120}},
+  {id:'fr',name:'Friends’ data in her photos and messages',why:'Not hers alone. Never licensed without the other person’s consent.',mode:'reference',kb:{reference:0.2,commitment:0.6,full:610000}}],
+ rcpName:'activity log',rcpDate:'14 Sep 2026',
+ orig:'{"active_hours":{"morning":14,"afternoon":22,"evening":64},"posts_per_month":[12,9,14,11]}',
+ alt:'{"active_hours":{"morning":14,"afternoon":22,"evening":64},"posts_per_month":[12,9,14,3]}',
+ tamperLabel:'Simulate: the platform quietly edits her activity log',
+ buyers:{
+  A:{name:'Ardent Social Science Lab',kind:'University, non-profit',wants:['Age band','Declared interests','Posts per month','Active hours'],price:1.00,cohort:10000,terms:'12 months, no re-identification, results published openly.',refuse:false},
+  B:{name:'BrightAd Network',kind:'Ad-tech, for profit',wants:['Age band','Declared interests','Active hours','Friend graph','Message text','Inferred ad profile'],price:3.00,cohort:50000,terms:'Audience targeting, retained indefinitely.',refuse:true}},
+ pol:['Research by non-profits: permitted.','Other people’s data (friends, messages, tagged photos) never leaves without their consent.','Advertising profiling: prohibited.','Cohort of at least 1,000 people.'],
+ accept:'Non-profit research, no third-party data requested, cohort above 1,000.',
+ refuseWhy:'Policy 2: the request includes friends and message text. Policy 3: advertising profiling is prohibited.',
+ agentRefuseLog:'Agent refused: policies 2 and 3.',
+ sample:'{ "ageBand": "40-49", "interests": ["running", "cooking", "film"], "postsPerMonth": [12, 9, 14, 11], "activeHours": "evening" }',
+ withheld:'name, friends, messages, photos, inferred ad profile',
+ delivLog:'Activity log verified against the receipt. Four fields delivered; name, friends, messages and photos withheld.',
+ note:'Photos stay at the platform or in her own cloud. Keeping them in the account would cost far more than every other record together.'}
+};
+Object.assign(SC.clinical,{kind:'clinical',series:[['2023-03-02',58],['2024-03-04',54],['2025-03-03',52],['2026-03-02',49]],altLast:53,x:{file:'labs.json',graph:'urn:anna:graph:labs',exportRef:'urn:export:stmarys-2026-10-22/labs.json',org:'https://stmarys.example/org',title:'urn:anna:title:labs-1',path:'graphs/labs',okPurpose:'ex:NonProfitResearch',pTarget:'ex:ClinicianNote',pPurpose:'ex:Underwriting',b:{A:{id:'ardent-1',who:'https://ardent.example/group',purpose:'ex:NonProfitResearch',props:['ex:ageBand','ex:diagnosis','ex:hba1c','ex:medClass'],retain:'P12M'},B:{id:'northshield-1',who:'https://northshield.example/',purpose:'ex:Underwriting',props:['ex:ageBand','ex:diagnosis','ex:hba1c','ex:medClass','ex:clinicianNote'],retain:null}}}});
+Object.assign(SC.social,{kind:'social',hours:{morning:14,afternoon:22,evening:64},series:[['1',12],['2',9],['3',14],['4',11]],altLast:3,x:{file:'activity_log.json',graph:'urn:anna:graph:activity',exportRef:'urn:export:circlr-2026-10-22/activity_log.json',org:'https://circlr.example/org',title:'urn:anna:title:activity-1',path:'graphs/activity',okPurpose:'ex:NonProfitResearch',pTarget:'ex:ThirdPartyData',pPurpose:'ex:AdvertisingProfiling',b:{A:{id:'ardent-soc-1',who:'https://ardent-lab.example/social',purpose:'ex:NonProfitResearch',props:['ex:ageBand','ex:interest','ex:postsPerMonth','ex:activeHours'],retain:'P12M'},B:{id:'brightad-1',who:'https://brightad.example/',purpose:'ex:AdvertisingProfiling',props:['ex:ageBand','ex:interest','ex:activeHours','ex:friend','ex:messageText','ex:inferredAdProfile'],retain:null}}}});
+SC.ai={label:'AI training',kind:'ai',unit:'writer',
+ labels:['Open','Bring data in','The crawler knocks','Settle and audit'],
+ dek:'Anna has written online for fifteen years: a recipe blog, forum answers, product reviews. An AI lab\u2019s crawler wants it for training. Follow the request from a locked pod, through negotiation and escrow, to a licensed delivery and an audit. The writing platform, Scribbly, and both labs are invented.',
+ holder:'Scribbly',holderShort:'Scribbly',
+ intro:'Like a basic bank account, this is a right: her bank must offer one. The bank checks her identity once and issues credentials. It does not own her identity, and the account lives in neutral standards.',
+ s1head:'Her writing sits on many sites. The account holds the claim.',
+ prog:['Bank files portability requests to Scribbly on Anna\u2019s behalf (existing law, GDPR Art. 20)','Export received: 3,670 documents and their hashes','Converted to linked data, with provenance','Manifest receipt stored, texts encrypted with Anna\u2019s key'],
+ recs:[
+  {id:'blog',name:'Recipe blog posts (312)',why:'Her own work. Small and valuable to a lab.',mode:'full',kb:{reference:0.2,commitment:0.6,full:1800}},
+  {id:'forum',name:'Forum answers (2,940)',why:'Her own work. The platform may delete it.',mode:'full',kb:{reference:0.2,commitment:0.6,full:6400}},
+  {id:'rev',name:'Product reviews (418)',why:'Her own work.',mode:'full',kb:{reference:0.2,commitment:0.6,full:700}},
+  {id:'photo',name:'Blog photos',why:'Bulk. Stays with the platform or her own cloud.',mode:'reference',kb:{reference:0.2,commitment:0.6,full:2400000}},
+  {id:'msg',name:'Private messages',why:'Other people are in them. Never part of a licence.',mode:'reference',kb:{reference:0.2,commitment:0.6,full:90000}},
+  {id:'rcp',name:'Corpus manifest (document hashes)',why:'The lab must later prove what it trained on.',mode:'commitment',kb:{reference:0.2,commitment:0.6,full:260}}],
+ rcpName:'corpus manifest',rcpDate:'3 Oct 2026',
+ orig:'',alt:'',
+ tamperLabel:'Simulate: the lab\u2019s manifest lists a document Anna never licensed',
+ buyers:{
+  A:{name:'Lumen Labs',kind:'AI lab, open-weights models',bot:'LumenBot',wants:[],price:1.00,cohort:50000,terms:'',refuse:false},
+  B:{name:'Obsidian AI',kind:'AI lab, closed models',bot:'ObsidianBot',wants:[],price:2.00,cohort:50000,terms:'',refuse:true}},
+ pol:['Only AI training, and only by labs that accept an audit.','Private messages and photos never leave my account.','Price floor: \u20AC1.00 per writer, held in escrow before any access.','Cohort of at least 1,000 writers.'],
+ accept:'',refuseWhy:'',agentRefuseLog:'',sample:'',withheld:'',delivLog:'',
+ note:'Photos and private messages stay out of every licence. The messages contain other people.',
+ neg:{
+  A:[
+   {from:'Lumen Labs',purpose:'AI training',scope:'All writing and private messages',price:0.40,term:'No end date',audit:'None',repro:'Unrestricted'},
+   {from:'Anna\u2019s agent',purpose:'AI training',scope:'Blog, forum, reviews',price:1.50,term:'18 months',audit:'Manifest and canary check',repro:'No verbatim output'},
+   {from:'Lumen Labs',purpose:'AI training',scope:'Blog, forum, reviews',price:1.00,term:'18 months',audit:'Manifest and canary check',repro:'No verbatim output',note:'Accepts everything except the price.'},
+   {from:'Anna\u2019s agent',final:'agree',note:'The price is at the floor. Accepted, and both sides sign.'}],
+  B:[
+   {from:'Obsidian AI',purpose:'AI training and product use',scope:'All writing and private messages',price:0.60,term:'No end date',audit:'None',repro:'Unrestricted'},
+   {from:'Anna\u2019s agent',purpose:'AI training',scope:'Blog, forum, reviews',price:1.50,term:'18 months',audit:'Manifest and canary check',repro:'No verbatim output'},
+   {from:'Obsidian AI',purpose:'AI training',scope:'Blog, forum, reviews',price:2.00,term:'18 months',audit:'None (trade secret)',repro:'No commitment',note:'Offers more money and still refuses the audit.'},
+   {from:'Anna\u2019s agent',final:'nodeal',note:'An audit is required at any price. No deal. The pod stays closed.'}]},
+ series:[['post-0001',812,'3a9f21c0'],['post-0002',455,'b71e08d4'],['forum-0017',230,'5cd2e9a1'],['review-0042',96,'0e44f7b3']],
+ extra:['msg-0099',64,'9d1c77aa'],altLast:0,
+ x:{file:'documents.json',graph:'urn:anna:graph:manifest',exportRef:'urn:export:scribbly-2026-10-22/documents.json',org:'https://scribbly.example/org',title:'urn:anna:title:manifest-1',path:'graphs/manifest',okPurpose:'ex:AITraining',pTarget:'ex:PrivateMessage',pPurpose:'ex:Unlicensed',b:{A:{id:'lumen-1',who:'https://lumen.example/labs',purpose:'ex:AITraining',props:[],retain:'P18M'},B:{id:'obsidian-1',who:'https://obsidian.example/',purpose:'ex:AITraining',props:[],retain:null}}}};
+var MODES={reference:'Reference',commitment:'Receipt',full:'Full copy'};
+var mins=9*60+14;
+function clock(){mins+=1;var h=Math.floor(mins/60),m=mins%60;return (h<10?'0':'')+h+':'+(m<10?'0':'')+m}
+var cur='clinical',C=SC[cur];
+function fresh(){var m={};C.recs.forEach(function(r){m[r.id]=r.mode});return {round:0,knocked:false,rogue:0,agreed:false,noDeal:false,escrow:false,fetched:false,audit:null,step:0,max:0,opened:false,importing:0,imported:false,modes:m,hash:null,buyer:'A',verdict:null,tamper:false,delivered:null,verify:null,paid:false,carrier:'Bank A',switched:false,balance:0,log:[],pins:{1:false,2:false,3:false,4:false}}}
+var s=fresh();
+function add(text,tag){s.log.push({t:clock(),text:text,tag:tag||''})}
+function sha(str){
+ try{return crypto.subtle.digest('SHA-256',new TextEncoder().encode(str)).then(function(b){return Array.prototype.map.call(new Uint8Array(b),function(x){return x.toString(16).padStart(2,'0')}).join('')})}
+ catch(e){var h=5381;for(var i=0;i<str.length;i++){h=((h<<5)+h+str.charCodeAt(i))>>>0}return Promise.resolve(h.toString(16).padStart(8,'0').repeat(8))}
+}
+function tags(a){return '<span class="tags">'+a.map(function(x){return '<span class="tag" title="'+({T:'Title',S:'Settlement',N:'Negotiation'}[x])+'">'+x+'</span>'}).join('')+'</span>'}
+function total(){return C.recs.reduce(function(a,r){return a+r.kb[s.modes[r.id]]},0)}
+function fullTotal(){return C.recs.reduce(function(a,r){return a+r.kb.full},0)}
+function fmt(kb){if(kb>=1e6)return (kb/1e6).toFixed(1)+' GB';if(kb>=1e3)return (kb/1e3).toFixed(1)+' MB';return kb.toFixed(1)+' KB'}
+function money(n){return '€'+n.toFixed(2)}
+function pay(b){var g=b.price*b.cohort,f=g*0.02;return {g:g,f:f,h:g-f,e:(g-f)/b.cohort}}
+function m0(n){return '€'+n.toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2})}
+var LDEF=['Open','Bring data in','An offer','Settle and switch'];var LABELS=LDEF;
+function renderScn(){
+ $('#scn').innerHTML='<span>Scenario</span>'+Object.keys(SC).map(function(k){return '<button role="radio" aria-checked="'+(k===cur)+'" data-scn="'+k+'">'+SC[k].label+'</button>'}).join('')+'<span style="margin-left:18px">View</span>'+[['story','Story'],['tech','Technical']].map(function(v){return '<button role="radio" aria-checked="'+(view===v[0])+'" data-view="'+v[0]+'">'+v[1]+'</button>'}).join('');
+ $('#dek').textContent=C.dek;
+}
+function renderSteps(){
+ $('#steps').innerHTML=LABELS.map(function(l,i){return '<button data-go="'+i+'"'+(i===s.step?' aria-current="step"':'')+(i>s.max?' disabled':'')+'>'+(i+1)+'. '+l+'</button>'}).join('');
+}
+function canNext(){return s.step===0?s.opened:s.step===1?s.imported:s.step===2?(C.kind==='ai'?s.fetched:s.delivered==='ok'):false}
+function nav(){
+ var back=s.step>0?'<button class="ghost" data-act="back">Back</button>':'<span></span>';
+ var fwd=s.step<3?'<button class="primary" data-act="next"'+(canNext()?'':' disabled')+'>Next</button>':'<button class="ghost" data-act="reset">Start over</button>';
+ return '<div class="nav">'+back+fwd+'</div>';
+}
+function scene0(){
+ return '<div class="head"><h2>Anna opens a data account</h2><span class="pin" title="Pillar 1">1</span></div>'+
+ '<p>'+C.intro+'</p>'+
+ '<button class="primary" data-act="open"'+(s.opened?' disabled':'')+'>Open the account</button>'+
+ (s.opened?'<div class="res fade"><span class="ok">Account open at '+E(s.carrier)+'</span><span>Credentials issued: adult, resident. The registry is empty. Nothing has been copied from anywhere.</span></div>':'')+nav();
+}
+function scene1(){
+ var h='<div class="head"><h2>'+C.s1head+'</h2>'+tags(['T'])+'</div>'+
+ '<p>Anna authorises ingress once. For each record, the account keeps only what its risk calls for: a reference, a signed receipt, or a full copy. Change a mode and watch the storage figure.</p>'+
+ '<button class="primary" data-act="import"'+(s.imported||s.importing?' disabled':'')+'>Authorise ingress</button>';
+ if(s.importing||s.imported){
+  h+='<ul class="plain fade">'+C.prog.map(function(p,i){var done=s.imported||i<s.importing;return '<li><span class="mark '+(done?'ok':'')+'">'+(done?'✓':'…')+'</span><span'+(done?'':' class="muted"')+'>'+E(p)+'</span></li>'}).join('')+'</ul>';
+ }
+ if(s.imported){
+  h+='<div class="tw fade"><table><thead><tr><th>Record</th><th>Mode</th><th>Why</th><th>Stored</th></tr></thead><tbody>'+C.recs.map(function(r){
+   return '<tr><td><b>'+E(r.name)+'</b></td><td><select data-mode="'+r.id+'" aria-label="Mode for '+E(r.name)+'">'+Object.keys(MODES).map(function(m){return '<option value="'+m+'"'+(s.modes[r.id]===m?' selected':'')+'>'+MODES[m]+'</option>'}).join('')+'</select></td><td class="muted">'+E(r.why)+'</td><td class="mono">'+fmt(r.kb[s.modes[r.id]])+'</td></tr>';
+  }).join('')+'</tbody></table></div>'+(C.note?'<p class="muted fade">'+E(C.note)+'</p>':'');
+ }
+ return h+nav();
+}
+function scene2(){
+ var b=C.buyers[s.buyer];
+ var h='<div class="head"><h2>An offer arrives as a schema</h2>'+tags(['N','S'])+'</div>'+
+ '<p>A buyer publishes the fields it wants, a price and its terms. Anna’s agent checks them against her policy. Nothing moves until the price is in escrow.</p>'+
+ '<div class="seg" role="radiogroup" aria-label="Buyer">'+['A','B'].map(function(k){var x=C.buyers[k];return '<label><input type="radio" name="buyer" value="'+k+'"'+(s.buyer===k?' checked':'')+(s.delivered==='ok'?' disabled':'')+'><span><b>'+E(x.name)+'</b><br><span class="muted">'+E(x.kind)+' · '+money(x.price)+' per '+(C.unit||'record')+' · cohort of '+x.cohort.toLocaleString('en-GB')+'</span></span></label>'}).join('')+'</div>'+
+ '<div class="res"><h3>Schema requested</h3><span>'+b.wants.map(E).join(', ')+'</span><span class="muted">'+E(b.terms)+'</span></div>'+
+ '<div><h3>Anna’s policy</h3><ul class="plain">'+C.pol.map(function(t){return '<li><span class="mark">·</span><span>'+E(t)+'</span></li>'}).join('')+'</ul></div>'+
+ '<label style="display:flex;gap:8px;align-items:center;font-size:13.5px"><input type="checkbox" id="tamper"'+(s.tamper?' checked':'')+(s.delivered==='ok'?' disabled':'')+'> '+E(C.tamperLabel)+'</label>'+
+ '<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="primary" data-act="agent"'+(s.delivered==='ok'?' disabled':'')+'>Ask Anna’s agent</button>'+
+ (s.verdict==='accept'?'<button class="primary" data-act="query"'+(s.delivered==='ok'?' disabled':'')+'>Fund escrow and run the query</button>':'')+'</div>';
+ if(s.verdict==='accept'&&!s.delivered)h+='<div class="res fade"><span class="ok">Agent: accept</span><span>'+E(C.accept)+'</span></div>';
+ if(s.verdict==='refuse')h+='<div class="res fade"><span class="bad">Agent: refuse</span><span>'+E(C.refuseWhy)+' Nothing left the account. Try the other buyer.</span></div>';
+ if(s.delivered==='failed')h+='<div class="res fade"><span class="bad">Delivery stopped</span><span>The '+E(C.rcpName)+' no longer match the receipt of '+E(C.rcpDate)+' ('+E(s.verify.expected)+' ≠ '+E(s.verify.actual)+'). The record is withheld and the holder is notified. Untick the simulation and run the query again.</span></div>';
+ if(s.delivered==='ok')h+='<div class="res fade"><span class="ok">Delivered after escrow</span><span>Verified: '+E(C.rcpName)+' match the receipt ('+E(s.verify.actual)+').</span><span class="mono">'+E(C.sample)+'</span><span class="muted">Withheld by policy: '+E(C.withheld)+'.</span></div>';
+ return h+nav();
+}
+function scene3(){
+ var b=C.buyers.A,q=pay(b);
+ var h='<div class="head"><h2>Settle, then test the exit</h2>'+tags(['S'])+'<span class="pin" title="Pillar 2">2</span></div>'+
+ '<p>One record is worth '+money(b.price)+'. The value is in the cohort: '+b.cohort.toLocaleString('en-GB')+' holders answer one query. The escrow releases to everyone at once.</p>'+
+ '<button class="primary" data-act="pay"'+(s.paid?' disabled':'')+'>Release payout</button>';
+ if(s.paid)h+='<div class="res fade"><span class="ok">Paid out</span><span>Cohort '+m0(q.g)+' · bank fee 2% = '+m0(q.f)+' · to holders '+m0(q.h)+' · <b>Anna receives '+money(q.e)+'</b></span><span class="muted">Every step is in a signed log a supervisor can audit.</span></div>';
+ h+='<p style="margin-top:4px">Now the exit test. The titles and receipts live in standards, not in the bank’s ledger, so swapping the carrier should change nothing but the host.</p>'+
+ '<button class="ghost" data-act="switch"'+(s.paid?'':' disabled')+' style="align-self:flex-start">'+(s.carrier==='Bank A'?'Switch to Bank B':'Switch back to Bank A')+'</button>';
+ if(s.switched)h+='<div class="res fade"><span class="ok">Carrier is now '+E(s.carrier)+'</span><span>Titles unchanged. Receipts verify. Balance '+money(s.balance)+' unchanged.</span></div>';
+ return h+nav();
+}
+function ledger(){
+ var h='<div class="head"><h2>Anna’s data account</h2><span class="carrier">Carrier: '+E(s.carrier)+'</span></div>';
+ h+='<div class="stat"><div><b>'+(s.imported?fmt(total()):'0 KB')+'</b><span>stored'+(s.imported?' (a full copy of everything: '+fmt(fullTotal())+')':'')+'</span></div><div><b>'+money(s.balance)+'</b><span>balance</span></div></div>';
+ h+='<div><h3>Registry</h3>';
+ if(!s.imported)h+='<p class="muted">Empty. Records appear here with a Title, a source and a storage mode.</p>';
+ else h+='<ul class="plain">'+C.recs.map(function(r){return '<li><span class="tag" title="Title">T</span><span style="flex:1;min-width:0">'+E(r.name)+'<br><span class="muted">Anna holds: read, license, revoke</span></span><span class="pill">'+MODES[s.modes[r.id]]+'</span></li>'}).join('')+'</ul>'+(s.hash?'<p class="mono muted" style="margin-top:8px">receipt, '+E(C.rcpName)+': sha256 '+E(s.hash.slice(0,16))+'…</p>':'');
+ h+='</div>';
+ if(C.kind==='ai'){h+='<div><h3>Access</h3>'+(s.fetched?'<p>Lumen Labs: read, licensed writing only, 18 months. Messages and photos: closed.</p>':'<p class="muted">Closed to everyone but Anna.'+(s.rogue?' Blocked attempts: '+s.rogue+'.':'')+'</p>')+'</div>'}
+ h+='<div><h3>Directive pillars exercised</h3><div class="pins">'+[[1,'Right to an account'],[2,'Switching'],[3,'No plaintext access'],[4,'Supervision']].map(function(p){return '<span><span class="pin'+(s.pins[p[0]]?'':' off')+'">'+p[0]+'</span>'+p[1]+'</span>'}).join('')+'</div></div>';
+ h+='<div><h3>Activity, signed</h3>'+(s.log.length?'<ul class="plain log">'+s.log.slice().reverse().map(function(l){return '<li><time>'+l.t+'</time><span>'+E(l.text)+'</span>'+(l.tag?'<span class="tag">'+l.tag+'</span>':'<span></span>')+'</li>'}).join('')+'</ul>':'<p class="muted">Nothing yet.</p>')+'</div>';
+ return h;
+}
+/* ---------- technical layer ---------- */
+var view='story';
+var RDFT='<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>',XI='^^<http://www.w3.org/2001/XMLSchema#integer>',XD='^^<http://www.w3.org/2001/XMLSchema#date>',SOSA='http://www.w3.org/ns/sosa/';
+function series(sc,tamper){if(sc.kind==='ai')return sc.series.map(function(r){return r.slice()}).concat(tamper?[sc.extra]:[]);var a=sc.series.map(function(r){return r.slice()});if(tamper)a[a.length-1][1]=sc.altLast;return a}
+function trip(sc,tamper){
+ var T=[],a=series(sc,tamper);
+ if(sc.kind==='clinical'){a.forEach(function(r){var o='<urn:anna:obs/'+r[0]+'>';T.push([o,RDFT,'<'+SOSA+'Observation>']);T.push([o,'<'+SOSA+'observedProperty>','<urn:ex:HbA1c>']);T.push([o,'<'+SOSA+'hasSimpleResult>','"'+r[1]+'"'+XI]);T.push([o,'<'+SOSA+'resultTime>','"'+r[0]+'"'+XD])})}
+ else if(sc.kind==='ai'){a.forEach(function(r){var o='<urn:anna:doc/'+r[0]+'>';T.push([o,RDFT,'<urn:ex:Document>']);T.push([o,'<urn:ex:words>','"'+r[1]+'"'+XI]);T.push([o,'<urn:ex:sha256>','"'+r[2]+'"'])})}
+ else{
+  Object.keys(sc.hours).forEach(function(k){var o='<urn:anna:log/hour/'+k+'>';T.push([o,RDFT,'<urn:ex:ActiveHour>']);T.push([o,'<urn:ex:period>','"'+k+'"']);T.push([o,'<urn:ex:percent>','"'+sc.hours[k]+'"'+XI])});
+  a.forEach(function(r,i){var o='<urn:anna:log/month/'+(i+1)+'>';T.push([o,RDFT,'<urn:ex:MonthlyPosts>']);T.push([o,'<urn:ex:index>','"'+(i+1)+'"'+XI]);T.push([o,'<urn:ex:posts>','"'+r[1]+'"'+XI])});
+ }
+ return T;
+}
+function ntLines(sc,tamper){return trip(sc,tamper).map(function(t){return t.join(' ')+' .'}).sort()}
+function nt(sc,tamper){return ntLines(sc,tamper).join('\n')}
+function prep(){C.orig=nt(C,false);C.alt=nt(C,true);LABELS=C.labels||LDEF}
+var hc={};
+function ensureH(){['orig','alt'].forEach(function(k){var key=cur+':'+k;if(!hc[key]){hc[key]='computing…';sha(C[k]).then(function(h){hc[key]=h;if(view==='tech')render()})}})}
+function exportJson(sc){
+ if(sc.kind==='clinical')return '{\n  "hba1c_mmol_mol": [\n'+sc.series.map(function(r){return '    ["'+r[0]+'", '+r[1]+']'}).join(',\n')+'\n  ]\n}';
+
+ if(sc.kind==='ai')return '{\n  "documents": [\n'+sc.series.map(function(r){return '    { "id": "'+r[0]+'", "words": '+r[1]+', "sha256": "'+r[2]+'" }'}).join(',\n')+',\n    …\n  ]\n}';
+ return '{\n  "active_hours": { '+Object.keys(sc.hours).map(function(k){return '"'+k+'": '+sc.hours[k]}).join(', ')+' },\n  "posts_per_month": ['+sc.series.map(function(r){return r[1]}).join(', ')+']\n}';
+}
+function turtleOut(sc){
+ var h='@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n';
+ if(sc.kind==='clinical'){
+  h+='@prefix sosa: <http://www.w3.org/ns/sosa/> .\n@prefix ex: <urn:ex:> .\n\n';
+  return h+sc.series.map(function(r){return '<urn:anna:obs/'+r[0]+'> a sosa:Observation ;\n    sosa:observedProperty ex:HbA1c ;\n    sosa:hasSimpleResult '+r[1]+' ;\n    sosa:resultTime "'+r[0]+'"^^xsd:date .'}).join('\n\n');
+ }
+ if(sc.kind==='ai'){h+='@prefix ex: <urn:ex:> .\n\n';return h+sc.series.map(function(r){return '<urn:anna:doc/'+r[0]+'> a ex:Document ;\n    ex:words '+r[1]+' ; ex:sha256 "'+r[2]+'" .'}).join('\n\n')}
+ h+='@prefix ex: <urn:ex:> .\n\n';
+ return h+Object.keys(sc.hours).map(function(k){return '<urn:anna:log/hour/'+k+'> a ex:ActiveHour ;\n    ex:period "'+k+'" ; ex:percent '+sc.hours[k]+' .'}).join('\n')+'\n\n'+sc.series.map(function(r,i){return '<urn:anna:log/month/'+(i+1)+'> a ex:MonthlyPosts ;\n    ex:index '+(i+1)+' ; ex:posts '+r[1]+' .'}).join('\n');
+}
+var Q_CLIN='PREFIX xyz:  <http://sparql.xyz/facade-x/data/>\nPREFIX fx:   <http://sparql.xyz/facade-x/ns/>\nPREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>\nPREFIX sosa: <http://www.w3.org/ns/sosa/>\nPREFIX ex:   <urn:ex:>\n\nCONSTRUCT {\n  ?obs a sosa:Observation ;\n       sosa:observedProperty ex:HbA1c ;\n       sosa:hasSimpleResult  ?value ;\n       sosa:resultTime       ?day .\n}\nWHERE {\n  SERVICE <x-sparql-anything:location=export/labs.json> {\n    ?root xyz:hba1c_mmol_mol ?list .\n    ?list fx:anySlot ?pair .\n    ?pair rdf:_1 ?d ;\n          rdf:_2 ?value .\n  }\n  BIND(xsd:date(?d) AS ?day)\n  BIND(IRI(CONCAT("urn:anna:obs/", ?d)) AS ?obs)\n}';
+var Q_SOC='PREFIX xyz: <http://sparql.xyz/facade-x/data/>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX ex:  <urn:ex:>\n\nCONSTRUCT {\n  ?h a ex:ActiveHour ; ex:period ?period ; ex:percent ?pct .\n  ?m a ex:MonthlyPosts ; ex:index ?i ; ex:posts ?n .\n}\nWHERE {\n  SERVICE <x-sparql-anything:location=export/activity_log.json> {\n    { ?root xyz:active_hours ?hours .\n      ?hours ?p ?pct .\n      FILTER(STRSTARTS(STR(?p), STR(xyz:)))\n      BIND(STRAFTER(STR(?p), STR(xyz:)) AS ?period)\n      BIND(IRI(CONCAT("urn:anna:log/hour/", ?period)) AS ?h) }\n    UNION\n    { ?root xyz:posts_per_month ?arr .\n      ?arr ?slot ?n .\n      FILTER(STRSTARTS(STR(?slot), STR(rdf:_)))\n      BIND(xsd:integer(STRAFTER(STR(?slot), STR(rdf:_))) AS ?i)\n      BIND(IRI(CONCAT("urn:anna:log/month/", STR(?i))) AS ?m) }\n  }\n}';
+var Q_AI='PREFIX xyz: <http://sparql.xyz/facade-x/data/>\nPREFIX ex:  <urn:ex:>\n\nCONSTRUCT {\n  ?doc a ex:Document ; ex:words ?w ; ex:sha256 ?h .\n}\nWHERE {\n  SERVICE <x-sparql-anything:location=export/documents.json> {\n    ?root xyz:documents ?list .\n    ?list ?slot ?d .\n    FILTER(STRSTARTS(STR(?slot), "http://www.w3.org/1999/02/22-rdf-syntax-ns#_"))\n    ?d xyz:id ?id ; xyz:words ?w ; xyz:sha256 ?h .\n    BIND(IRI(CONCAT("urn:anna:doc/", ?id)) AS ?doc)\n  }\n}';
+function hl(code){
+ var esc=code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+ return esc.replace(/(#[^\n]*)|("(?:[^"\\\n]|\\.)*")|(&lt;[^\n]*?&gt;)|\b(PREFIX|CONSTRUCT|WHERE|SERVICE|SELECT|GRAPH|FILTER|BIND|UNION|AS|POST)\b|(@prefix)/g,function(m,c,st,iri,kw,pf){
+  if(c)return '<span class="c-com">'+c+'</span>';
+  if(st)return '<span class="c-str">'+st+'</span>';
+  if(iri)return '<span class="c-iri">'+iri+'</span>';
+  return '<span class="c-kw">'+m+'</span>';
+ });
+}
+function code(c){return '<pre class="code"><code>'+hl(c)+'</code></pre>'}
+function blk(title,chips,body,note){
+ return '<div class="tb"><div class="tbh"><b>'+title+'</b><span class="chips">'+chips.map(function(c){return '<span class="chip '+(c[1]==='p'?'p':'e')+'">'+E(c[0])+'</span>'}).join('')+'</span></div>'+body+(note?'<p class="tn">'+note+'</p>':'')+'</div>';
+}
+var DID='did:key:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK';
+function hostOf(){return s.carrier==='Bank A'?'bank-a':'bank-b'}
+function renderTech(){
+ var x=C.x,host=hostOf(),B=C.buyers[s.buyer],XB=x.b[s.buyer],hOrig=hc[cur+':orig']||'',hNow=hc[cur+':'+(s.tamper?'alt':'orig')]||'';
+ var h='<div class="head"><h2>Under the hood: '+LABELS[s.step].toLowerCase()+'</h2></div><p class="tn">Ochre chips are standards that exist. Rust chips are the primitives this paper proposes. Identifiers, keys and vocabularies marked ex: or title: are invented for illustration.</p><div class="tgrid">';
+ if(s.step===0){
+  h+=blk('Her identifier, on her devices',[['DID','e']],code('{\n  "@context": ["https://www.w3.org/ns/did/v1"],\n  "id": "'+DID+'",\n  "authentication": ["'+DID+'#key-1"]\n}'),'The private key stays on her devices. The bank never sees it, so it cannot become her identity.');
+  h+=blk('A credential from the bank',[['Verifiable Credentials','e'],['Data Integrity','e']],code('{\n  "@context": ["https://www.w3.org/ns/credentials/v2"],\n  "type": ["VerifiableCredential", "AdultResidentCredential"],\n  "issuer": "did:web:bank-a.example",\n  "validFrom": "2026-10-22T09:15:00Z",\n  "credentialSubject": {\n    "id": "'+DID.slice(0,24)+'…",\n    "adult": true,\n    "residentOf": "EU"\n  },\n  "proof": {\n    "type": "DataIntegrityProof",\n    "cryptosuite": "eddsa-rdfc-2022",\n    "verificationMethod": "did:web:bank-a.example#key-1",\n    "proofValue": "z3FXQ…"\n  }\n}'),'Having done KYC anyway, the bank issues a claim about her and signs it. Anyone can check the signature without calling the bank. The credential type is invented.');
+  h+=blk('Her profile, and who may read the pod',[['WebID','e'],['Solid / LWS','e'],['WAC','e']],code('<https://pod.'+host+'.example/anna/profile/card#me>\n    a foaf:Person ;\n    owl:sameAs <'+DID.slice(0,24)+'…> ;\n    solid:oidcIssuer <https://id.'+host+'.example/> ;\n    pim:storage <https://pod.'+host+'.example/anna/> .\n\n# /anna/.acl: only Anna is listed. The bank is not.\n<#owner> a acl:Authorization ;\n    acl:agent <https://pod.'+host+'.example/anna/profile/card#me> ;\n    acl:accessTo <./> ; acl:default <./> ;\n    acl:mode acl:Read, acl:Write, acl:Control .'),'The bank runs the server but holds no acl:Read. Client-side encryption sits on top of this and has no standard yet. Directive pillar 3 would require one. Solid is being standardised as W3C Linked Web Storage, so how access control is expressed here may change.');
+ }
+ if(s.step===1){
+  h+=blk('What arrived',[['JSON','e']],code('# export/'+x.file+'  (as delivered by '+E(C.holderShort)+')\n'+exportJson(C)),'A file format, not meaning. A buyer cannot query across thousands of these.');
+  h+=blk('Conversion with SPARQL Anything',[['SPARQL','e'],['Facade-X','e']],code(C.kind==='clinical'?Q_CLIN:C.kind==='ai'?Q_AI:Q_SOC),'SPARQL Anything reads the JSON as RDF and lets one CONSTRUCT query reshape it, with no custom parser. The query is shown, not run here; the output next to it is generated from the same data.');
+  h+=blk('Result: linked data',[['RDF','e'],[C.kind==='clinical'?'SOSA':'RDF vocabulary','e']],code(turtleOut(C)),'Every record now has an identifier a buyer’s query can address.');
+  h+=blk('Where it came from',[['PROV-O','e']],code('<'+x.graph+'> a prov:Entity ;\n    prov:wasGeneratedBy <urn:anna:act:ingest-1> ;\n    prov:wasDerivedFrom <'+x.exportRef+'> ;\n    prov:wasAttributedTo <'+x.org+'> .\n\n<urn:anna:act:ingest-1> a prov:Activity ;\n    prov:used <'+x.exportRef+'> ;\n    prov:wasAssociatedWith <https://'+host+'.example/ingress> ;\n    prov:startedAtTime "2026-10-22T09:16:00Z"^^xsd:dateTime .\n\n<https://'+host+'.example/ingress> a prov:Agent ;\n    prov:actedOnBehalfOf <'+DID.slice(0,24)+'…> .'),'A buyer can see who produced the data, from what, on whose behalf. This is what makes a copy worth paying for.');
+  h+=blk('Her claim',[['Title (proposed)','p'],['DID','e'],['Data Integrity','e']],code('# vocabulary invented here; the paper proposes the primitive, not this syntax\n<'+x.title+'> a title:Title ;\n    title:holder    <'+DID.slice(0,24)+'…> ;\n    title:graph     <'+x.graph+'> ;\n    title:rights    title:Read, title:License, title:Revoke ;\n    title:locatedAt <https://pod.'+host+'.example/anna/'+x.path+'> ;\n    title:receipt   "sha256:'+hOrig.slice(0,16)+'…" .\n# signed with a Data Integrity proof, as the credential above'),'The graph is named by an identifier with no host in it, so the claim survives a change of carrier.');
+  if(C.kind==='ai')h+=aiLock();
+  var lines=ntLines(C,false);
+  h+=blk('The receipt',[['RDFC-1.0','e'],['SHA-256','e']],code(lines.slice(0,3).map(function(l){return l.length>78?l.slice(0,76)+'…':l}).join('\n')+'\n# … '+lines.length+' triples in all, sorted\n\nsha256  '+hOrig),'There are no blank nodes, so sorted N-Triples is the canonical form that RDF Dataset Canonicalization produces. Any serialisation of the same graph gives this same hash. It is the value in the ledger.'+(C.kind==='ai'?' Four documents stand in for all 3,670 here.':''));
+ }
+ if(s.step===2&&C.kind==='ai')h+=aiStep2();
+ if(s.step===2&&C.kind!=='ai'){
+  var shape='@prefix sh: <http://www.w3.org/ns/shacl#> .\n\nex:'+(C.kind==='clinical'?'ResearchRecord':'AudienceRecord')+' a sh:NodeShape ;\n    sh:targetClass ex:'+(C.kind==='clinical'?'PatientRecord':'Person')+' ;\n    sh:property '+XB.props.map(function(p){return '[ sh:path '+p+' ; sh:minCount 1 ]'}).join(' ,\n                ')+' .';
+  h+=blk('What the buyer wants: a schema',[['SHACL','e']],code(shape),'The buyer’s demand is a shape. The account fetches only what matches it, which is how the buyer’s schema becomes the trigger for materialising data.');
+  var req='<urn:req:'+XB.id+'> a odrl:Request ;\n    odrl:permission [\n        odrl:assignee <'+XB.who+'> ;\n        odrl:target   ex:'+(C.kind==='clinical'?'PatientRecord':'Person')+' ;\n        odrl:action   odrl:use ;\n        odrl:constraint [ odrl:leftOperand odrl:purpose ;\n                          odrl:operator odrl:eq ;\n                          odrl:rightOperand '+XB.purpose+' ] ;\n        odrl:duty [ odrl:action odrl:compensate ;\n                    odrl:payAmount "'+B.price.toFixed(2)+'"^^xsd:decimal ;\n                    odrl:unit <https://www.wikidata.org/entity/Q4916> ] ,\n                  '+(XB.retain?'[ odrl:action odrl:delete ;\n                    odrl:constraint [ odrl:leftOperand odrl:elapsedTime ;\n                                      odrl:operator odrl:eq ;\n                                      odrl:rightOperand "'+XB.retain+'"^^xsd:duration ] ]':'# no deletion duty offered')+'\n    ] .';
+  h+=blk('The offer: a policy',[['ODRL','e']],code(req),'Purpose, price and retention are machine-readable terms, not a PDF.');
+  var pol='<urn:policy:anna-1> a odrl:Set ;\n    odrl:permission [ odrl:action odrl:use ;\n        odrl:constraint [ odrl:leftOperand odrl:purpose ; odrl:operator odrl:eq ;\n                          odrl:rightOperand '+x.okPurpose+' ] ,\n                        [ odrl:leftOperand odrl:count ; odrl:operator odrl:gteq ;\n                          odrl:rightOperand 1000 ] ] ;\n    odrl:prohibition [ odrl:action odrl:use ; odrl:target '+x.pTarget+' ] ,\n                     [ odrl:action odrl:use ;\n        odrl:constraint [ odrl:leftOperand odrl:purpose ; odrl:operator odrl:eq ;\n                          odrl:rightOperand '+x.pPurpose+' ] ] .';
+  h+=blk('Her policy, stated once',[['ODRL','e']],code(pol),'She wrote this once. Her agent applies it to every request from now on.');
+  var asks=XB.props.indexOf(x.pTarget)>=0||(C.kind==='social'&&XB.props.indexOf('ex:friend')>=0);
+  var ok1=XB.purpose===x.okPurpose,ok2=B.cohort>=1000,ok3=!B.refuse,ok4=XB.purpose!==x.pPurpose;
+  function tr(ok,t){return '<li><span class="mark '+(ok?'ok':'bad')+'">'+(ok?'✓':'✗')+'</span><span>'+E(t)+'</span></li>'}
+  var trace='<ul class="plain">'+tr(ok1,'purpose '+XB.purpose+(ok1?' is permitted':' is not a permitted purpose'))+tr(ok2,'cohort '+B.cohort.toLocaleString('en-GB')+' ≥ 1,000')+tr(ok3,ok3?'request does not touch '+x.pTarget:'request includes '+x.pTarget+', which is prohibited')+tr(ok4,ok4?'purpose is not prohibited':XB.purpose+' is a prohibited purpose')+'</ul><p><b>'+((ok1&&ok2&&ok3&&ok4)?'PERMIT':'DENY')+'</b> <span class="muted">'+(s.verdict?'(agent has answered)':'(agent has not been asked yet)')+'</span></p>';
+  h+=blk('Her agent evaluates',[['Negotiation (proposed)','p'],['ODRL','e']],trace,'The primitive is the protocol around this: how offers, counter-offers and acceptance are exchanged. The evaluation itself is ordinary policy matching.');
+  var diff=ntLines(C,false).filter(function(l){return ntLines(C,true).indexOf(l)<0}),diff2=ntLines(C,true).filter(function(l){return ntLines(C,false).indexOf(l)<0});
+  var chk='<pre class="code"><code>receipt (at ingest)   '+E(hOrig)+'\nrecomputed (now)      '+E(hNow)+'\n<span class="'+(hOrig===hNow?'d-ins':'d-del')+'">'+(hOrig===hNow?'MATCH: release the data':'MISMATCH: withhold the record')+'</span>'+(s.tamper?'\n\n'+diff.map(function(l){return '<span class="d-del">- '+E(l.length>70?l.slice(0,68)+'…':l)+'</span>'}).join('\n')+'\n'+diff2.map(function(l){return '<span class="d-ins">+ '+E(l.length>70?l.slice(0,68)+'…':l)+'</span>'}).join('\n'):'')+'</code></pre>';
+  h+=blk('Check before anything is released',[['RDFC-1.0','e'],['SHA-256','e']],chk,'Untick or tick the simulation in the story view and watch this change. One changed triple changes the whole hash.');
+  var q=s.verdict==='refuse'?'# not run: the agent refused this request':'PREFIX ex: <urn:ex:>\n\nSELECT '+XB.props.map(function(p){return '?'+p.split(':')[1]}).join(' ')+'\nWHERE {\n  GRAPH <'+x.graph+'> {\n    ?r '+XB.props.map(function(p){return p+' ?'+p.split(':')[1]}).join(' ;\n       ')+' .\n  }\n}\n# '+x.pTarget+' is outside the scope Anna’s policy exposes.'+(s.delivered==='ok'?'\n\n# result\n'+C.sample:'');
+  h+=blk('The priced query',[['SPARQL','e'],['Priced Query (proposed)','p']],code(q),'The query is ordinary SPARQL. The proposed primitive is the envelope: it cannot run until an offer is countersigned and the price is held.');
+  var names=['Offer accepted','Escrow funded','Results released','Payout completed'];
+  var idx=s.paid?4:s.delivered==='ok'?3:s.delivered==='failed'?2:s.verdict==='accept'?1:0;
+  var states='<ol class="states">'+names.map(function(n,i){return '<li class="'+(i<idx?'done':i===idx?'now':'')+'">'+(i<idx?'✓ ':'')+E(n)+'</li>'}).join('')+'</ol>';
+  var minor=Math.round(pay(C.buyers.A).e*100);
+  var op='# one holder’s share of the cohort payment\nPOST https://pay.'+host+'.example/incoming-payments\n{\n  "walletAddress": "https://wallet.'+host+'.example/anna",\n  "incomingAmount": { "value": "'+minor+'", "assetCode": "EUR", "assetScale": 2 },\n  "metadata": { "offer": "urn:req:'+x.b.A.id+'", "cohort": '+C.buyers.A.cohort+' }\n}';
+  h+=blk('Settlement',[['Open Payments','e'],['Settlement (proposed)','p']],states+code(op),'Open Payments moves the money. It has no escrow or release condition, so the proposed primitive adds that: results are released only after the payment is held, and payout completes after.');
+ }
+ if(s.step===3){
+  if(C.kind==='ai')h+=aiStep3();
+  var oldH=host==='bank-a'?'bank-b':'bank-a';
+  var d='<pre class="code"><code><span class="c-com"># profile document, before and after</span>\n&lt;https://pod.'+(s.switched?oldH:host)+'.example/anna/profile/card#me&gt;\n    a foaf:Person ;\n    owl:sameAs &lt;'+E(DID.slice(0,24))+'…&gt; ;\n'+(s.switched?'<span class="d-del">-   pim:storage &lt;https://pod.'+oldH+'.example/anna/&gt; .</span>\n<span class="d-ins">+   pim:storage &lt;https://pod.'+host+'.example/anna/&gt; .</span>':'    pim:storage &lt;https://pod.'+host+'.example/anna/&gt; .\n<span class="c-com"># switch carrier to see the one line that changes</span>')+'</code></pre>';
+  h+=blk('The one line that changes',[['WebID','e'],['Solid / LWS','e']],d,'The carrier is a pointer in her profile. Everything else is addressed by identifiers that do not contain a host.');
+  var mv='<div class="two"><div><h3>Moves with her</h3><ul class="plain"><li>Her DID and keys</li><li>Credentials, still verifiable by anyone</li><li>Titles and graph identifiers</li><li>Receipts (the hash is of the data, not the host)</li><li>Her ODRL policy</li></ul></div><div><h3>Re-issued by the new host</h3><ul class="plain"><li>pim:storage and title:locatedAt</li><li>The .acl files</li><li>The OIDC issuer</li></ul></div></div>';
+  h+=blk('What moves, what does not',[['DID','e'],['ODRL','e'],['Title (proposed)','p']],mv);
+  h+=blk('Receipt after the move',[['RDFC-1.0','e'],['SHA-256','e']],'<pre class="code"><code>receipt (at ingest)   '+E(hOrig)+'\nrecomputed (now)      '+E(hc[cur+':orig']||'')+'\n<span class="d-ins">MATCH</span>'+(s.switched?'  (after moving to '+E(s.carrier)+')':'')+'</code></pre>','The receipt does not depend on where the data lives, which is why a carrier can be replaced without a trust reset.');
+ }
+ return h+'</div>';
+}
+function chg(rs,i,k){return i>0&&rs[i-1][k]!==rs[i][k]?' class="chg"':''}
+function termsOf(rs,i){var r=rs[i];if(!r.final)return r;var j=i-1;while(j>=0&&rs[j].final)j--;return rs[j]}
+function negTable(rs,upto){
+ var rows='';for(var i=0;i<upto;i++){var r=rs[i];var t=termsOf(rs,i);var tr=r.final?{purpose:'',scope:'',price:t.price,term:'',audit:'',repro:''}:r;
+  rows+='<tr><td>'+(i+1)+'</td><td><b>'+E(r.from)+'</b></td>'+(r.final?'<td colspan="5">'+E(r.note)+'</td>':'<td'+chg(rs,i,'price')+'>\u20AC'+r.price.toFixed(2)+'</td><td'+chg(rs,i,'scope')+'>'+E(r.scope)+'</td><td'+chg(rs,i,'term')+'>'+E(r.term)+'</td><td'+chg(rs,i,'audit')+'>'+E(r.audit)+'</td><td'+chg(rs,i,'repro')+'>'+E(r.repro)+(r.note?'<br><span class="muted">'+E(r.note)+'</span>':'')+'</td>')+'</tr>';}
+ return '<div class="tw fade"><table><thead><tr><th>#</th><th>From</th><th>Price</th><th>Scope</th><th>Term</th><th>Audit</th><th>Output</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+}
+function scene2ai(){
+ var rs=C.neg[s.buyer],b=C.buyers[s.buyer],n=rs.length;
+ var h='<div class="head"><h2>The crawler knocks. The pod stays shut.</h2>'+tags(['N','S'])+'</div>'+
+ '<p>The pod is closed to everyone but Anna. A crawler gets a ticket and a place to negotiate, never data. Access opens only after a deal is signed and the price is held in escrow.</p>'+
+ '<div class="seg" role="radiogroup" aria-label="Crawler">'+['A','B'].map(function(k){var x=C.buyers[k];return '<label><input type="radio" name="buyer" value="'+k+'"'+(s.buyer===k?' checked':'')+(s.fetched?' disabled':'')+'><span><b>'+E(x.name)+'</b><br><span class="muted">'+E(x.kind)+' \u00B7 cohort of '+x.cohort.toLocaleString('en-GB')+' writers</span></span></label>'}).join('')+'</div>'+
+ '<div><h3>Anna\u2019s policy</h3><ul class="plain">'+C.pol.map(function(t){return '<li><span class="mark">\u00B7</span><span>'+E(t)+'</span></li>'}).join('')+'</ul></div>';
+ var btn='';
+ if(!s.knocked)btn='<button class="primary" data-act="knock">'+E(b.bot)+' requests the pod</button>';
+ else if(!s.agreed&&!s.noDeal)btn='<button class="primary" data-act="round">Next round ('+(s.round+1)+' of '+n+')</button>';
+ else if(s.agreed&&!s.escrow)btn='<button class="primary" data-act="escrow">Lab funds escrow</button>';
+ else if(s.escrow&&!s.fetched)btn='<button class="primary" data-act="fetch">Crawler fetches with its token</button>';
+ else if(s.fetched)btn='<button class="primary" disabled>Delivered</button>';
+ h+='<div style="display:flex;gap:10px;flex-wrap:wrap">'+btn+(s.knocked&&!s.fetched?'<button class="ghost" data-act="rogue">Send a crawler that skips negotiation</button>':'')+'</div>';
+ if(s.knocked)h+='<div class="res fade"><span class="bad">HTTP 401</span><span>'+E(b.bot)+' got a ticket and a pointer to Anna\u2019s agent. Served: nothing.</span></div>';
+ if(s.rogue)h+='<div class="res fade"><span class="bad">ShadowBot refused, '+s.rogue+' time'+(s.rogue>1?'s':'')+'</span><span>No ticket, no agreement: HTTP 401. The attempt is logged with a timestamp.</span></div>';
+ if(s.round>0)h+=negTable(rs,s.round);
+ if(s.noDeal)h+='<div class="res fade"><span class="bad">No deal</span><span>Nothing left the account. Try the other lab.</span></div>';
+ if(s.agreed)h+='<div class="res fade"><span class="ok">Agreement signed</span><span>Blog, forum and reviews, for AI training, 18 months, \u20AC1.00 per writer, audit and no verbatim output. Messages and photos excluded.</span></div>';
+ if(s.escrow&&!s.fetched)h+='<div class="res fade"><span class="ok">Escrow funded</span><span>\u20AC50,000.00 is held. The token can now be issued.</span></div>';
+ if(s.fetched)h+='<div class="res fade"><span class="ok">Delivered under a scoped token</span><span>3,670 documents, with a signed manifest and planted canary records. Private messages: HTTP 403.</span></div>';
+ return h+nav();
+}
+function scene3ai(){
+ var b=C.buyers.A,q=pay(b);
+ var h='<div class="head"><h2>Settle, audit, and test the exit</h2>'+tags(['S','N'])+'<span class="pin" title="Pillar 2">2</span></div>'+
+ '<p>The escrow releases to all '+b.cohort.toLocaleString('en-GB')+' writers at once. One writer\u2019s share is small, which is why they negotiate as a cohort.</p>'+
+ '<button class="primary" data-act="pay"'+(s.paid?' disabled':'')+'>Release payout</button>';
+ if(s.paid)h+='<div class="res fade"><span class="ok">Paid out</span><span>Cohort '+m0(q.g)+' \u00B7 bank fee 2% = '+m0(q.f)+' \u00B7 to writers '+m0(q.h)+' \u00B7 <b>Anna receives '+money(q.e)+'</b></span></div>';
+ h+='<p style="margin-top:4px">Six months on, the agreement requires the lab to publish a manifest of what it trained on. Her pod compares it with what she licensed. Planted canary records add a second check. They are evidence, not proof.</p>'+
+ '<label style="display:flex;gap:8px;align-items:center;font-size:13.5px"><input type="checkbox" id="tamper"'+(s.tamper?' checked':'')+'> '+E(C.tamperLabel)+'</label>'+
+ '<button class="ghost" data-act="audit" style="align-self:flex-start">Run the audit</button>';
+ if(s.audit==='ok')h+='<div class="res fade"><span class="ok">Audit passed</span><span>Every document in the lab\u2019s manifest was licensed.</span></div>';
+ if(s.audit==='breach')h+='<div class="res fade"><span class="bad">Breach</span><span>The lab\u2019s manifest lists msg-0099, a private message that was never licensed. The licence is withdrawn and the remedy clause applies.</span></div>';
+ h+='<p style="margin-top:4px">Now the exit test. Titles, receipts and the agreement live in standards, so swapping the carrier changes only the host.</p>'+
+ '<button class="ghost" data-act="switch"'+(s.paid?'':' disabled')+' style="align-self:flex-start">'+(s.carrier==='Bank A'?'Switch to Bank B':'Switch back to Bank A')+'</button>';
+ if(s.switched)h+='<div class="res fade"><span class="ok">Carrier is now '+E(s.carrier)+'</span><span>Titles unchanged. Receipts verify. Balance '+money(s.balance)+' unchanged.</span></div>';
+ return h+nav();
+}
+function aiLock(){
+ var host=hostOf();
+ return blk('The lock',[['Solid / LWS','e'],['WAC','e'],['UMA 2.0','e']],code('# /anna/writing/.acl : nobody but Anna\n<#owner> a acl:Authorization ;\n    acl:agent <https://pod.'+host+'.example/anna/profile/card#me> ;\n    acl:accessTo <./> ; acl:default <./> ;\n    acl:mode acl:Read, acl:Write, acl:Control .\n\n# Everyone else is granted access per request by Anna\u2019s authorisation\n# server (UMA). This file is never edited to let a crawler in.'),'A crawler cannot read anything just because it can reach the URL. The only way in is a token issued after a deal.');
+}
+function aiStep2(){
+ var host=hostOf(),b=C.buyers[s.buyer],rs=C.neg[s.buyer],out='';
+ var knock='GET /anna/writing/ HTTP/1.1\nHost: pod.'+host+'.example\nUser-Agent: '+b.bot+'/2.1 (+https://'+(s.buyer==='A'?'lumen':'obsidian')+'.example/bot)\n\nHTTP/1.1 401 Unauthorized\nWWW-Authenticate: UMA realm="anna",\n    as_uri="https://agent.anna.example",\n    ticket="016f84e8-f9b9-11e0-bd6f-0021cc6004de"\nLink: <https://pod.'+host+'.example/anna/.well-known/license.xml>; rel="license"';
+ out+=blk('The knock: a ticket, not data',[['HTTP','e'],['UMA 2.0','e'],['Solid-OIDC','e']],code(knock),'Every unauthorised request gets this answer. The ticket names what was asked for and where to ask permission. The public pointer says where terms are discussed, as RSL does with a robots.txt License line, and grants nothing.');
+ out+=blk('What it must show before it gets a token',[['UMA 2.0','e'],['Negotiation (proposed)','p']],code('POST https://agent.anna.example/token\ngrant_type=urn:ietf:params:oauth:grant-type:uma-ticket\nticket=016f84e8-f9b9-11e0-bd6f-0021cc6004de\nclaim_token=<the lab\u2019s OIDC ID token>\n\nHTTP/1.1 403 Forbidden\n{ "error": "need_info",\n  "required_claims": [\n    { "name": "agreement", "friendly_name": "A signed ODRL agreement" },\n    { "name": "escrow",    "friendly_name": "The price, held in escrow" } ] }'),'UMA already has a "need more information" answer. The proposed primitives define what these two claims are, how they are produced, and how both sides sign them. The response is simplified.');
+ var last=termsOf(rs,rs.length-1);
+ var done=s.round>=rs.length;
+ var rounds=rs.slice(0,s.round).map(function(r,i){return (i+1)+'. '+r.from+(r.final?': '+r.note:': \u20AC'+r.price.toFixed(2)+', '+r.scope.toLowerCase()+', '+r.term.toLowerCase()+', audit: '+r.audit.toLowerCase())}).join('\n');
+ out+=blk('The rounds',[['ODRL','e'],['Negotiation (proposed)','p']],code(s.round?rounds:'# no rounds yet. Press the button in the story view.'),'Each message is an ODRL policy signed by its sender. The agent only ever moves inside the limits Anna set once.');
+ var agr=s.agreed?'<urn:agreement:lumen-1> a odrl:Agreement ;\n    odrl:assigner <https://union.'+host+'.example/writers> ;   # the cohort, run by the bank\n    odrl:assignee <https://lumen.example/labs> ;\n    odrl:permission [ odrl:action odrl:use ; odrl:target ex:Writing ;\n        odrl:constraint [ odrl:leftOperand odrl:purpose ; odrl:operator odrl:eq ;\n                          odrl:rightOperand ex:AITraining ] ,\n                        [ odrl:leftOperand odrl:elapsedTime ; odrl:operator odrl:lteq ;\n                          odrl:rightOperand "P18M"^^xsd:duration ] ;\n        odrl:duty [ odrl:action odrl:compensate ; odrl:payAmount "1.00"^^xsd:decimal ] ,\n                  [ odrl:action ex:publishManifest ;\n                    odrl:consequence [ odrl:action odrl:compensate ; odrl:payAmount "5.00"^^xsd:decimal ] ] ,\n                  [ odrl:action ex:avoidVerbatimOutput ] ] ;\n    odrl:prohibition [ odrl:action odrl:use ; odrl:target ex:PrivateMessage ] .\n# signed by both parties with Data Integrity proofs':(s.noDeal?'# no agreement: the lab refused the audit':'# no agreement yet');
+ out+=blk('The agreement',[['ODRL','e'],['Data Integrity','e']],code(agr),'Breach has a price written into the contract. The remedy amount and the vocabulary are invented for illustration.');
+ var tok;
+ if(!s.agreed)tok='# no token: need_info, missing claim "agreement"';
+ else if(!s.escrow)tok='# no token: need_info, missing claim "escrow"';
+ else tok='HTTP/1.1 200 OK\n{ "access_token": "eyJhbGciOiJFZERTQSJ9\u2026",\n  "token_type": "Bearer",\n  "permissions": [ { "resource_id": "https://pod.'+host+'.example/anna/writing/",\n                     "resource_scopes": ["read"], "exp": 1790000000 } ] }\n\nGET /anna/writing/blog/     -> 200 OK\n'+(s.fetched?'GET /anna/messages/         -> 403 Forbidden\n':'')+'# the token covers the licensed graphs and nothing else';
+ out+=blk('The token',[['UMA 2.0','e'],['Settlement (proposed)','p']],code(tok),'Escrow is the Settlement primitive: the token is only issued after the price is held. Open Payments moves the money and has no such condition, so this is what is added.');
+ if(s.rogue)out+=blk('The crawler that skips the deal',[['HTTP','e']],code('GET /anna/writing/blog/ HTTP/1.1\nUser-Agent: ShadowBot/1.0\n\nHTTP/1.1 401 Unauthorized\n# logged: ShadowBot, no ticket, no agreement'),'No data left, and the attempt is on record. Whether a refusal carries legal weight depends on the machine-readable rights reservation in force, and EU text-and-data-mining law is the usual reference. Ask a lawyer.');
+ return out;
+}
+function aiStep3(){
+ var host=hostOf(),minor=Math.round(pay(C.buyers.A).e*100),out='';
+ out+=blk('Payout',[['Open Payments','e'],['Settlement (proposed)','p']],code('# one writer\u2019s share of the cohort payment\nPOST https://pay.'+host+'.example/incoming-payments\n{\n  "walletAddress": "https://wallet.'+host+'.example/anna",\n  "incomingAmount": { "value": "'+minor+'", "assetCode": "EUR", "assetScale": 2 },\n  "metadata": { "agreement": "urn:agreement:lumen-1", "cohort": '+C.buyers.A.cohort+' }\n}'),'Open Payments moves the money. The escrow that released it is the proposed part.');
+ var res=s.audit==='breach'?'<urn:anna:doc/msg-0099>':s.audit==='ok'?'# (no rows)':'# not run yet';
+ out+=blk('The audit, as a query',[['SPARQL','e'],['RDF','e']],code('PREFIX ex: <urn:ex:>\n\n# documents the lab says it trained on, minus documents Anna licensed\nSELECT ?doc\nWHERE {\n  GRAPH <urn:lab:lumen:manifest-month6> { ?doc a ex:Document }\n  FILTER NOT EXISTS {\n    GRAPH <urn:anna:graph:manifest> { ?doc a ex:Document }\n  }\n}\n\n# result\n'+res),'A set difference over two published graphs. The lab\u2019s manifest is a signed RDF graph it promised to publish. A non-empty result is a breach, and the consequence clause in the agreement applies.');
+ out+=blk('Canary records',[['RDF','e']],code('# planted in the delivered copy, absent from every public source\n<urn:anna:doc/post-0002> ex:canary "ember-lattice-4417" .\n\n# later: probe the model for the phrase'),'If a model reproduces a canary, the licensed delivery is a likely source. This is evidence, not proof. Nobody can yet prove from outside that a model trained on a given record, or remove one person\u2019s influence from it.');
+ return out;
+}
+function render(){
+ renderScn();renderSteps();
+ $('#stage').innerHTML=[scene0,scene1,C.kind==='ai'?scene2ai:scene2,C.kind==='ai'?scene3ai:scene3][s.step]();
+ $('#ledger').innerHTML=ledger();
+ $('#tech').innerHTML=view==='tech'?renderTech():'';
+}
+var T=function(fn,ms){return new Promise(function(r){setTimeout(function(){fn();r()},ms)})};
+document.addEventListener('click',function(ev){
+ var sc=ev.target.closest('[data-scn]');
+ var vw=ev.target.closest('[data-view]');
+ if(vw){view=vw.getAttribute('data-view');render();return}
+ if(sc){cur=sc.getAttribute('data-scn');C=SC[cur];prep();ensureH();mins=9*60+14;s=fresh();render();return}
+ var g=ev.target.closest('[data-go]');
+ if(g&&!g.disabled){s.step=+g.getAttribute('data-go');render();return}
+ var a=ev.target.closest('[data-act]');if(!a||a.disabled)return;
+ var act=a.getAttribute('data-act');
+ if(act==='next'){if(canNext()){s.step++;s.max=Math.max(s.max,s.step);render()}}
+ else if(act==='back'){s.step--;render()}
+ else if(act==='reset'){mins=9*60+14;s=fresh();render()}
+ else if(act==='open'){s.opened=true;s.pins[1]=true;add('Account opened at Bank A. Credentials issued: adult, resident.');render()}
+ else if(act==='import'){
+  var mine=s;s.importing=1;render();
+  sha(C.orig).then(function(h){
+   s.hash=h;
+   return T(function(){if(s!==mine)return;s.importing=2;add('Portability request filed to '+C.holderShort+' for Anna (GDPR Art. 20).');render()},500)
+    .then(function(){return T(function(){if(s!==mine)return;s.importing=3;add('Export received.');render()},600)})
+    .then(function(){return T(function(){if(s!==mine)return;s.importing=4;add('Converted to linked data with provenance. Titles registered to Anna.','T');render()},600)})
+    .then(function(){return T(function(){if(s!==mine)return;s.imported=true;s.pins[3]=true;add('Receipt for '+C.rcpName+' stored: '+h.slice(0,12)+'…. Record encrypted with Anna’s key; the bank keeps a recovery share only.');s.max=Math.max(s.max,1);render()},600)});
+  });
+ }
+ else if(act==='agent'){
+  var b=C.buyers[s.buyer];
+  if(b.refuse){s.verdict='refuse';add(b.name+' offered '+money(b.price)+' per record. '+C.agentRefuseLog,'N')}
+  else{s.verdict='accept';add(b.name+' offered '+money(b.price)+' per record. Agent accepted: all four policies satisfied.','N')}
+  render();
+ }
+ else if(act==='query'){
+  var expected=s.hash,mine2=s,q=pay(C.buyers.A);
+  sha(s.tamper?C.alt:C.orig).then(function(actual){
+   if(s!==mine2)return;
+   s.verify={expected:expected.slice(0,12)+'…',actual:actual.slice(0,12)+'…'};
+   add('Buyer funded escrow: '+m0(q.g)+'.','S');
+   if(actual!==expected){s.delivered='failed';add('Verification failed for '+C.rcpName+'. Record withheld, holder notified.','S')}
+   else{s.delivered='ok';s.max=Math.max(s.max,2);add(C.delivLog,'S')}
+   render();
+  });
+ }
+ else if(act==='knock'){s.knocked=true;add(C.buyers[s.buyer].bot+' requested /anna/writing/. The pod answered 401 with a ticket. Nothing was served.','N');render()}
+ else if(act==='round'){var rs=C.neg[s.buyer],r=rs[s.round];s.round++;add(r.final?r.from+': '+r.note:r.from+' proposed €'+r.price.toFixed(2)+' per writer, '+r.scope.toLowerCase()+'.','N');if(r.final==='agree'){s.agreed=true;add('Agreement signed by both sides (ODRL, Data Integrity proofs).','T')}if(r.final==='nodeal'){s.noDeal=true}render()}
+ else if(act==='escrow'){s.escrow=true;add('Lumen Labs funded escrow: €50,000.00 (50,000 writers at €1.00).','S');render()}
+ else if(act==='fetch'){s.fetched=true;s.delivered='ok';s.max=Math.max(s.max,2);add('Crawler presented its token. Licensed corpus delivered with a signed manifest. Private messages: refused (403).','S');render()}
+ else if(act==='rogue'){s.rogue++;add('ShadowBot skipped negotiation and requested /anna/writing/. Refused (401) and logged.');render()}
+ else if(act==='audit'){s.audit=s.tamper?'breach':'ok';add(s.tamper?'Audit: the lab’s manifest lists msg-0099, never licensed. Licence withdrawn, remedy clause applies.':'Audit passed: every document in the lab’s manifest was licensed.','N');render()}
+ else if(act==='pay'){var q2=pay(C.buyers.A);s.paid=true;s.balance=q2.e;s.pins[4]=true;add('Escrow released. Anna credited '+money(q2.e)+' (cohort '+m0(q2.g)+', fee 2%).','S');render()}
+ else if(act==='switch'){s.carrier=s.carrier==='Bank A'?'Bank B':'Bank A';s.switched=true;s.pins[2]=true;add('Carrier switched to '+s.carrier+'. Titles, receipts and balance unchanged.');render()}
+});
+document.addEventListener('change',function(ev){
+ var t=ev.target;
+ if(t.matches('[data-mode]')){s.modes[t.getAttribute('data-mode')]=t.value;render();return}
+ if(t.name==='buyer'){s.buyer=t.value;s.verdict=null;s.delivered=null;s.round=0;s.agreed=false;s.noDeal=false;s.escrow=false;render();return}
+ if(t.id==='tamper'){s.tamper=t.checked;s.audit=null;if(s.delivered==='failed')s.delivered=null;render()}
+});
+prep();ensureH();render();
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Digital Emancipation</title>
+<meta name="description" content="A proposal for giving people title to their data, a place to keep it, and a way to be paid for it. ISWC 2026, Visionary Ideas.">
+<meta property="og:title" content="Digital Emancipation: Property, Banks, and the Completed Web">
+<meta property="og:description" content="A proposal for title, settlement and negotiation over personal data, carried by banks and written in open standards. Slides, diagram, interactive demo and open discussion.">
+<style>
+/* Layout: one reading column, three entry points, then the discussion. */
+:root{--bg:#F7F9FF;--panel:#FFFFFF;--line:#D4D4DC;--ink:#00002E;--muted:#505070;--rust:#003399;--on-rust:#FFFFFF;--ochre:#FFBE5C;
+--serif:Arial,Helvetica,sans-serif;--sans:Arial,Helvetica,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#001F5C;--panel:#00297A;--line:#41507D;--ink:#F7F9FF;--muted:#BFCCE6;--rust:#A3B6DA;--on-rust:#001F5C;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#001F5C;--panel:#00297A;--line:#41507D;--ink:#F7F9FF;--muted:#BFCCE6;--rust:#A3B6DA;--on-rust:#001F5C;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.6;padding-block:48px 72px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:56px}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(40px,8vw,76px);line-height:1.02;margin:0;text-wrap:balance}
+h1 em{display:block;font-weight:400;font-size:.46em;line-height:1.2;color:var(--rust);margin-top:14px}
+h2{font-family:var(--serif);font-weight:600;font-size:clamp(26px,4vw,34px);line-height:1.15;margin:0 0 14px;text-wrap:balance}
+h3{margin:0 0 4px;font-size:18px;font-weight:600}
+p{margin:0 0 14px}
+.eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:var(--muted);margin:0 0 18px}
+.lead{font-size:clamp(19px,2.4vw,23px);line-height:1.5;max-width:46ch;margin-top:24px}
+ol.five{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:10px}
+ol.five li::marker{color:var(--rust);font-weight:600}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:14px}
+.cards a{display:flex;flex-direction:column;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;text-decoration:none;color:var(--ink)}
+.cards a:hover{border-color:var(--rust)}
+.cards .t{font-family:var(--serif);font-size:26px;font-weight:600;line-height:1.1}
+.cards .d{font-size:15px;color:var(--muted)}
+.cards .go{margin-top:auto;font-size:14px;font-weight:600;color:var(--rust)}
+.ask{display:flex;flex-direction:column;gap:12px;margin:0;padding:0;list-style:none}
+.ask li{border-left:3px solid var(--ochre);padding:2px 0 2px 14px}
+.ask b{font-weight:600}
+.note{font-size:15px;color:var(--muted);border-top:1px solid var(--line);padding-top:18px}
+#discuss{min-height:80px}
+.fallback{background:var(--panel);border:1px dashed var(--line);border-radius:12px;padding:18px;font-size:15px}
+a{color:var(--rust)}
+a:focus-visible{outline:2px solid var(--rust);outline-offset:2px}
+.notice{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--ochre);border-radius:8px;padding:14px 18px;font-size:15px;margin:22px 0 0}
+.reg{width:100%;border-collapse:collapse;font-size:15px;margin:10px 0 18px}
+.reg th,.reg td{text-align:left;vertical-align:top;border-top:1px solid var(--line);padding:10px 12px 10px 0}
+.reg th{width:28%;font-weight:600}
+.reg tr:first-child th,.reg tr:first-child td{border-top:0}
+#loadbtn{font:inherit;font-weight:600;background:var(--rust);color:var(--on-rust);border:0;border-radius:8px;padding:10px 18px;cursor:pointer}
+#loadbtn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+footer{font-size:14px;color:var(--muted)}
+</style>
+</head>
+<body>
+<main>
+<header>
+<p class="eyebrow"><a href="https://iswc2026.semanticweb.org/">ISWC 2026</a> · Visionary Ideas · Bari</p>
+<h1>Digital Emancipation<em>Property, Banks, and the Completed Web</em></h1>
+<p class="lead">A proposal for giving people title to their data, a place to keep it, and a way to be paid for it. The standards are mostly there. What is missing is distribution, and three primitives.</p>
+<p class="notice" role="note"><b>Status.</b> A vision paper and a proposal, not research results, a product or advice. The demo is a simulation with invented people and prices. Read the <a href="#disclaimers">disclaimers</a> before relying on anything here.</p>
+<p style="margin:14px 0 0;font-size:16px"><a href="https://link.springer.com/chapter/10.1007/978-3-032-42029-9_30">Read the paper (Springer)</a> · <a href="https://iswc2026.semanticweb.org/">Conference site</a> · <a href="https://github.com/adrijanik/digital-emancipation#how-to-cite">How to cite</a></p>
+</header>
+
+<section aria-labelledby="idea">
+<h2 id="idea">The idea in five sentences</h2>
+<ol class="five">
+<li>Platforms hold the data people generate, and people cannot leave with it. That is a holdup problem, and the result is a kind of digital serfdom.</li>
+<li>The standards to fix this largely exist: identity, credentials, access control, provenance, policy and query.</li>
+<li>What is missing is distribution, and three primitives: a <b>Title</b> that binds terms to a claim, a <b>Settlement</b> layer that puts a price on a query, and a <b>Negotiation</b> protocol for agents.</li>
+<li>A bank is the practical first carrier, because it already checks identity, has branches and recovery, and can be supervised. It is the first line, not the only one: any supervised custodian can carry an account. Ownership stays in neutral standards, so the carrier is a tenant and not a landlord.</li>
+<li>A Data Account Directive, modelled on the Payment Accounts Directive, would make such an account a right.</li>
+</ol>
+<p style="margin-top:14px">It can be falsified. A pilot with one bank and one high-value cohort would show whether revenue can cover custody cost, and whether anyone ever switches carrier.</p>
+</section>
+
+<section aria-labelledby="explore">
+<h2 id="explore">Explore it</h2>
+<div class="cards">
+<a href="deck/"><span class="t">Slides</span><span class="d">Ten slides for a ten-minute talk. Press N for speaker notes, P for the two-minute path.</span><span class="go">Open the deck &rarr;</span></a>
+<a href="diagram/"><span class="t">Diagram</span><span class="d">The whole proposal on one page: the standards that exist, the three we propose, and where the directive sits.</span><span class="go">Open the diagram &rarr;</span></a>
+<a href="demo/"><span class="t">Demo</span><span class="d">A clickable simulation with three stories: clinical records, a social platform, and an AI lab's crawler at a locked pod. A technical view shows the standards at work.</span><span class="go">Run the demo &rarr;</span></a>
+</div>
+</section>
+
+<section aria-labelledby="ask">
+<h2 id="ask">Where it is weakest, and where help is wanted</h2>
+<ul class="ask">
+<li><b>Relational data.</b> My data reveals yours. The paper's answer is cohort-level title and regulating harmful inference. That is a direction, not a design.</li>
+<li><b>The decentralised objection.</b> Why banks and not keys and wallets? The argument is recovery and reach, but it deserves its strongest critics.</li>
+<li><b>The economics.</b> One person's data may be worth cents. The paper's figures are estimates, not measurements.</li>
+<li><b>Proving training use.</b> Nobody can yet show from outside that a model trained on a given record. Canary records give evidence, not proof.</li>
+<li><b>Building the primitives.</b> Title, Settlement and Negotiation are sketched here. They need people who build standards.</li>
+<li><b>A pilot.</b> One bank, one cohort. If you can host one, say so.</li>
+</ul>
+</section>
+
+<section aria-labelledby="talk">
+<h2 id="talk">Join the discussion</h2>
+<p>Comments are threaded by page and stored as GitHub Discussions. Signing in with GitHub is required to post. Critique is the point. Please do not post personal data, and keep to the <a href="#disclaimers">house rules</a> below.</p>
+<div id="discuss"></div>
+</section>
+
+<section id="disclaimers" aria-labelledby="dh">
+<h2 id="dh">Disclaimers, and how much to trust each claim</h2>
+<p>This is a proposal offered for debate. Different parts of it deserve different levels of trust, so here they are separated.</p>
+<table class="reg">
+<tr><th>Checked against public sources</th><td>That GDPR Article 20 gives a portability right, that the Payment Accounts Directive (2014/92/EU) gives a right to a basic payment account, and that the standards named here exist. Some are W3C Recommendations (RDF, SPARQL, SHACL, PROV-O, ODRL, DID, Verifiable Credentials). Others are community, industry or draft specifications: Solid, WebID, UMA 2.0, Open Payments and W3C Linked Web Storage, whose first public working draft appeared in March 2026. Specifications change, so check the current versions.</td></tr>
+<tr><th>Argument and analogy</th><td>The serfdom and holdup framing, the land-reform and property-title analogy, the post-1929 regulatory analogy and the claim that a bank is the best first carrier. These are the author's arguments, offered as analogy and not as evidence.</td></tr>
+<tr><th>Estimates</th><td>Any figure about what data might be worth, what custody costs, or what a bank might earn is the author's own estimate and has not been measured. The proposed pilot is meant to test them.</td></tr>
+<tr><th>Illustrative only</th><td>Everything in the demo and diagram: people, institutions, prices, hospital and platform names, credentials, tokens, ODRL offers, remedy clauses and receipts. Message formats are simplified, and some vocabulary is invented for the story. The SPARQL Anything queries are examples and have not been run against real data. The hashes are real SHA-256 computations over fictional records.</td></tr>
+<tr><th>Read from public sources, not audited</th><td>Descriptions of earlier efforts (NatWest's 2020 Solid demonstration, Flanders' Athumi utility, Japan's information-bank scheme, Estonia's X-Road) and of the AI-crawling standards work (IETF aipref, RSL, Cloudflare pay-per-crawl, TDMRep). Some details were recalled from memory. They may be incomplete or out of date, so check them before citing.</td></tr>
+</table>
+<p><b>Not advice.</b> Nothing here is legal, financial, investment or regulatory advice. A Data Account Directive does not exist: it is a proposal for what a directive could say.</p>
+<p><b>Affiliation and sponsorship.</b> The paper lists the author's affiliations as Accenture and Nearform. This site is a personal project under the author's own account. It is not an offer, product, or position of any employer, bank, standards body or the conference. <b>Sponsorship:</b> this work is sponsored by Nearform. Sponsorship does not mean Nearform endorses its claims. Product, standard and organisation names belong to their owners and are used for identification only. Nothing implies endorsement.</p>
+<p><b>No real people or data.</b> Anna and every other person, company and account in the demos is fictional. Any resemblance to a real one is coincidence. No personal data is collected by these pages.</p>
+<p><b>Third-party content.</b> The discussion box loads only when you press the button above it. It then fetches code from giscus.app and content from GitHub, which receive your IP address and may set cookies under their own policies. Comments are the commenters' own views, not the author's, and may be moderated or removed. Do not post anything confidential or personal.</p>
+<p><b>Corrections.</b> If you think a claim here is wrong, say so in the discussion. It will be fixed or flagged in the open.</p>
+<p>Paper: Janik, A. <a href="https://link.springer.com/chapter/10.1007/978-3-032-42029-9_30">Digital Emancipation: Property, Banks, and the Completed Web</a>. In: Koubarakis, M., et al. (eds.) The Semantic Web, ISWC 2026. LNCS, vol. 17128, pp. 526 to 534. Springer, Cham. <a href="https://doi.org/10.1007/978-3-032-42029-9_30">doi:10.1007/978-3-032-42029-9_30</a>. A BibTeX entry is in the <a href="https://github.com/adrijanik/digital-emancipation#how-to-cite">README</a>.</p>
+</section>
+
+<footer>
+<p>Adrianna Janik (Accenture, Nearform). Personal project, not the position of any employer. Sponsored by Nearform. Text and diagrams are licensed CC BY 4.0, code under the MIT licence. <a href="#disclaimers">Disclaimers</a>.</p>
+</footer>
+</main>
+<script src="site-config.js"></script>
+<script>
+(function(){
+var c=window.SITE||{},box=document.getElementById('discuss');
+function load(){
+ var s=document.createElement('script');s.src='https://giscus.app/client.js';
+ [['data-repo',c.repo],['data-repo-id',c.repoId],['data-category',c.category||'Ideas'],['data-category-id',c.categoryId],['data-mapping','pathname'],['data-strict','0'],['data-reactions-enabled','1'],['data-emit-metadata','0'],['data-input-position','top'],['data-theme','preferred_color_scheme'],['data-lang','en']].forEach(function(a){s.setAttribute(a[0],a[1])});
+ s.crossOrigin='anonymous';s.async=true;box.innerHTML='';box.appendChild(s);
+}
+if(c.repo&&c.repoId&&c.categoryId){
+ box.innerHTML='<div class="fallback"><p>The discussion is hosted by GitHub through giscus. Loading it sends your IP address to those services.</p><button id="loadbtn" type="button">Load the discussion</button></div>';
+ document.getElementById('loadbtn').addEventListener('click',load);
+}else{
+ box.innerHTML='<div class="fallback">The discussion opens once the repository is connected. '+(c.repo?'<a href="https://github.com/'+c.repo+'/discussions">Open the discussions on GitHub</a>.':'The site owner has not yet set the repository in site-config.js.')+'</div>';
+}
+})();
+</script>
+</body>
+</html>
